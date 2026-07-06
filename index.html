@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Loco Exotics</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <script src="js/hero.js" defer></script>
+  <noscript>
+    <style>
+      /* No JS: unpin the stage, show the reveal still and the headline. */
+      .hero-track { height: auto; }
+      .hero-stage { position: relative; }
+      .hero-video { display: none; }
+      .hero-endframe[hidden] { display: block; }
+      .hero-beat--1 { opacity: 1; }
+      .hero-cue { display: none; }
+    </style>
+  </noscript>
+</head>
+<body>
+
+  <section class="hero-track" data-hero-track aria-label="Loco Exotics — exotic bodywork">
+    <div class="hero-stage" data-hero-stage>
+
+      <video
+        class="hero-video"
+        data-hero-video
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        disablepictureinpicture
+        poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260706_183629_e109f3e0-4a80-4eea-ad25-22d7196ebffa.png"
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260706_184751_a75afc4e-a347-4ca7-933c-2e9c39ac6cd4.mp4" type="video/mp4">
+      </video>
+
+      <!-- Reduced-motion / no-JS still: the reveal's final side profile -->
+      <img
+        class="hero-endframe"
+        data-hero-endframe
+        src="https://d2ol7oe51mr4n9.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/51320e65-fe45-4eef-b353-30c080874061.jpg"
+        alt="Porsche side profile in a black studio void"
+        loading="lazy"
+        hidden
+      >
+
+      <div class="hero-beat hero-beat--1" data-beat data-in="0.05" data-in-end="0.12" data-out="0.30" data-out-end="0.40">
+        <h1 class="hero-beat__title">Loco Exotics</h1>
+        <p class="hero-beat__sub">Exotic bodywork. Zero compromise.</p>
+      </div>
+
+      <div class="hero-beat hero-beat--2" data-beat data-in="0.55" data-in-end="0.62" data-out="0.85" data-out-end="0.92">
+        <p class="hero-beat__line">Every curve, restored to factory.</p>
+      </div>
+
+      <div class="hero-cue" data-hero-cue aria-hidden="true">Scroll</div>
+
+    </div>
+  </section>
+
+  <section class="hero-after">
+    <a class="btn-outline" href="#estimate">Book an estimate</a>
+  </section>
+
+</body>
+</html>

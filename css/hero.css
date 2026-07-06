@@ -1,0 +1,213 @@
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-obsidian);
+  color: var(--color-bone-white);
+  font-family: var(--font-neue-montreal);
+  font-weight: var(--font-weight-regular);
+  font-feature-settings: "ss01" on;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll track + pinned stage                                         */
+/* ------------------------------------------------------------------ */
+
+.hero-track {
+  position: relative;
+  height: 250vh;
+  background: var(--color-pure-black);
+}
+
+.hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-pure-black);
+}
+
+/* svh keeps the pinned stage stable when mobile browser chrome hides */
+@supports (height: 100svh) {
+  .hero-track {
+    height: 250svh;
+  }
+
+  .hero-stage {
+    height: 100svh;
+  }
+}
+
+.hero-video,
+.hero-endframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* video edges bleed into the same black void as the stage */
+  background: var(--color-pure-black);
+}
+
+.hero-endframe[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Text beats — opacity/transform driven from scroll progress in JS    */
+/* ------------------------------------------------------------------ */
+
+.hero-beat {
+  position: absolute;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+  max-width: min(90vw, 720px);
+}
+
+/* Beat 1 — upper-left, over the void above/left of the car */
+.hero-beat--1 {
+  top: clamp(var(--spacing-64), 12vh, var(--spacing-108));
+  left: clamp(var(--spacing-20), 5vw, var(--spacing-72));
+}
+
+.hero-beat__title {
+  margin: 0;
+  font-size: clamp(56px, 11vw, var(--text-display));
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-display);
+  letter-spacing: -0.02em;
+  color: var(--color-bone-white);
+}
+
+.hero-beat__sub {
+  margin: var(--spacing-16) 0 0 2px;
+  max-width: 440px;
+  font-size: clamp(var(--text-body-sm), 2.2vw, var(--text-body-lg));
+  line-height: var(--leading-body-sm);
+  letter-spacing: -0.01em;
+  color: var(--color-fog-blue);
+}
+
+/* Beat 2 — upper band, clear of the side profile below */
+.hero-beat--2 {
+  top: clamp(var(--spacing-64), 14vh, 140px);
+  left: clamp(var(--spacing-20), 5vw, var(--spacing-72));
+  right: clamp(var(--spacing-20), 5vw, var(--spacing-72));
+  max-width: none;
+}
+
+.hero-beat__line {
+  margin: 0;
+  max-width: 15ch;
+  font-size: clamp(var(--text-heading-sm), 6vw, var(--text-heading-lg));
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-heading-lg);
+  letter-spacing: -0.01em;
+  color: var(--color-bone-white);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll cue                                                          */
+/* ------------------------------------------------------------------ */
+
+.hero-cue {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: calc(var(--spacing-40) + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-16);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-bone-white);
+  pointer-events: none;
+  transition: opacity var(--duration-default) var(--ease-signature);
+}
+
+.hero-cue::after {
+  content: "";
+  width: 1px;
+  height: var(--spacing-40);
+  background: var(--color-bone-white);
+  animation: hero-cue-drip 2.2s var(--ease-signature) infinite;
+  transform-origin: top;
+}
+
+.hero-cue.is-hidden {
+  opacity: 0;
+}
+
+@keyframes hero-cue-drip {
+  0% {
+    transform: scaleY(0);
+  }
+
+  45% {
+    transform: scaleY(1);
+  }
+
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cue::after {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Post-hero CTA band                                                  */
+/* ------------------------------------------------------------------ */
+
+.hero-after {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-108) var(--spacing-20);
+  background: var(--color-obsidian);
+}
+
+.btn-outline {
+  display: inline-block;
+  padding: 9px 15px;
+  border: 1px solid var(--color-bone-white);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-bone-white);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color var(--duration-default) var(--ease-signature),
+    border-color var(--duration-default) var(--ease-signature);
+}
+
+.btn-outline:hover,
+.btn-outline:focus-visible {
+  color: var(--color-fog-blue);
+  border-color: var(--color-fog-blue);
+}
