@@ -10,6 +10,20 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Native-smooth anchor jumps on devices that keep native scroll (touch). */
+  scroll-behavior: smooth;
+}
+
+/* When JS momentum owns scrolling (fine pointers), it lerps position itself,
+   so native scroll-behavior must be instant or the two fight. */
+html.js-smooth {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
@@ -69,54 +83,53 @@ body {
 /* Text beats — opacity/transform driven from scroll progress in JS    */
 /* ------------------------------------------------------------------ */
 
+/* Each beat is a full-stage layer that centers its content; opacity + a
+   small translate are driven from scroll progress in JS. */
 .hero-beat {
   position: absolute;
+  inset: 0;
   z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0 clamp(var(--spacing-20), 6vw, var(--spacing-72));
+  text-align: center;
   opacity: 0;
   pointer-events: none;
   will-change: opacity, transform;
-  max-width: min(90vw, 720px);
 }
 
-/* Beat 1 — upper-left, over the void above/left of the car */
-.hero-beat--1 {
-  top: clamp(var(--spacing-64), 12vh, var(--spacing-108));
-  left: clamp(var(--spacing-20), 5vw, var(--spacing-72));
+.hero-beat__inner {
+  max-width: min(94vw, 1200px);
 }
 
 .hero-beat__title {
   margin: 0;
-  font-size: clamp(56px, 11vw, var(--text-display));
-  font-weight: var(--font-weight-regular);
-  line-height: var(--leading-display);
-  letter-spacing: -0.02em;
+  font-size: clamp(72px, 15vw, 168px);
+  font-weight: var(--font-weight-bold);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
   color: var(--color-bone-white);
 }
 
 .hero-beat__sub {
-  margin: var(--spacing-16) 0 0 2px;
-  max-width: 440px;
-  font-size: clamp(var(--text-body-sm), 2.2vw, var(--text-body-lg));
+  margin: var(--spacing-20) auto 0;
+  max-width: 520px;
+  font-size: clamp(var(--text-body-sm), 2.4vw, 24px);
+  font-weight: var(--font-weight-bold);
   line-height: var(--leading-body-sm);
   letter-spacing: -0.01em;
   color: var(--color-fog-blue);
 }
 
-/* Beat 2 — upper band, clear of the side profile below */
-.hero-beat--2 {
-  top: clamp(var(--spacing-64), 14vh, 140px);
-  left: clamp(var(--spacing-20), 5vw, var(--spacing-72));
-  right: clamp(var(--spacing-20), 5vw, var(--spacing-72));
-  max-width: none;
-}
-
 .hero-beat__line {
-  margin: 0;
-  max-width: 15ch;
-  font-size: clamp(var(--text-heading-sm), 6vw, var(--text-heading-lg));
-  font-weight: var(--font-weight-regular);
-  line-height: var(--leading-heading-lg);
-  letter-spacing: -0.01em;
+  margin: 0 auto;
+  max-width: 18ch;
+  font-size: clamp(40px, 8.5vw, 96px);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
   color: var(--color-bone-white);
 }
 
