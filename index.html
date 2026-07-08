@@ -3,74 +3,185 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Loco Exotics</title>
+  <title>Loco Exotics — Exotic Bodywork Atelier</title>
+  <meta name="description" content="Loco Exotics is a luxury auto shop: paint correction, aluminum and carbon bodywork, and factory-spec restoration for exotic machines. By appointment only.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/hero.css">
-  <script src="js/smooth-scroll.js" defer></script>
-  <script src="js/hero.js" defer></script>
-  <noscript>
-    <style>
-      /* No JS: unpin the stage, show the reveal still and the headline. */
-      .hero-track { height: auto; }
-      .hero-stage { position: relative; }
-      .hero-video { display: none; }
-      .hero-endframe[hidden] { display: block; }
-      .hero-beat--1 { opacity: 1; }
-      .hero-cue { display: none; }
-    </style>
-  </noscript>
+  <link rel="stylesheet" href="css/site.css">
+  <script src="js/site.js" defer></script>
 </head>
 <body>
 
-  <section class="hero-track" data-hero-track aria-label="Loco Exotics — exotic bodywork">
-    <div class="hero-stage" data-hero-stage>
+  <nav class="nav" aria-label="Primary">
+    <a class="nav__wordmark" href="#intro">Loco Exotics</a>
+    <div class="nav__items">
+      <a class="nav__item is-active" href="#intro" data-nav="intro">Intro</a>
+      <a class="nav__item" href="#services" data-nav="services">Services</a>
+      <a class="nav__item" href="#atelier" data-nav="atelier">Atelier</a>
+      <a class="nav__item" href="#contact" data-nav="contact">Contact</a>
+    </div>
+  </nav>
 
-      <video
-        class="hero-video"
-        data-hero-video
-        muted
-        playsinline
-        webkit-playsinline
-        preload="auto"
-        disablepictureinpicture
-        poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260706_183629_e109f3e0-4a80-4eea-ad25-22d7196ebffa.png"
-        aria-hidden="true"
-        tabindex="-1"
-      >
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260706_184751_a75afc4e-a347-4ca7-933c-2e9c39ac6cd4.mp4" type="video/mp4">
-      </video>
+  <!-- HERO — photographic mode -->
+  <header class="hero" id="intro">
+    <img
+      class="hero__photo"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260708_180350_868b042e-ce7c-40c5-991b-cc54fe6dab99.png"
+      alt="Top-down view of a black sports car in a dark workshop bay, detailing tools arranged beside it"
+      fetchpriority="high"
+    >
 
-      <!-- Reduced-motion / no-JS still: the reveal's final side profile -->
+    <div class="hero__lockup">
+      <p class="hero__tagline">Exotic bodywork. Zero compromise.</p>
+      <h1 class="display">Loco<br>Exotics</h1>
+    </div>
+
+    <p class="hero__serial" aria-hidden="true">Loco Exotics — Bay 01</p>
+
+    <aside class="hero__card">
+      <h2 class="hero__card-heading">The atelier for cars that don't forgive shortcuts.</h2>
+      <hr class="divider">
+      <p class="hero__card-body">Paint correction, aluminum and carbon bodywork, and factory-spec restoration for exotic and vintage machines. By appointment only.</p>
+    </aside>
+
+    <button class="hero__video-card" type="button" data-film-open>
+      <span>Loco Exotics<br>Watch the reveal</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" fill="none" stroke="#ffedd7" stroke-width="1"/>
+        <path d="M10 8.5v7l6-3.5z" fill="#ffedd7"/>
+      </svg>
+    </button>
+  </header>
+
+  <!-- REVEAL 01 — void mode -->
+  <section class="reveal" aria-label="The atelier philosophy">
+    <h2 class="heading reveal__heading">Not a body shop. An atelier.</h2>
+    <figure class="reveal__figure">
       <img
-        class="hero-endframe"
-        data-hero-endframe
-        src="https://d2ol7oe51mr4n9.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/51320e65-fe45-4eef-b353-30c080874061.jpg"
-        alt="Porsche side profile in a black studio void"
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260708_180353_0c68fffb-c7c7-4f6c-97e0-f80b4b330db0.png"
+        alt="Black grand tourer at a three-quarter angle, rim-lit against warm darkness"
         loading="lazy"
-        hidden
       >
+    </figure>
+    <p class="voice reveal__body">Every panel leaves this floor the way it left the factory — gap-measured, paint-matched under three light sources, and signed off by the technician who shaped it.</p>
+  </section>
 
-      <div class="hero-beat hero-beat--1" data-beat data-in="0.05" data-in-end="0.12" data-out="0.30" data-out-end="0.40">
-        <div class="hero-beat__inner">
-          <h1 class="hero-beat__title">Loco Exotics</h1>
-          <p class="hero-beat__sub">Exotic bodywork. Zero compromise.</p>
-        </div>
-      </div>
+  <hr class="divider">
 
-      <div class="hero-beat hero-beat--2" data-beat data-in="0.55" data-in-end="0.62" data-out="0.85" data-out-end="0.92">
-        <div class="hero-beat__inner">
-          <p class="hero-beat__line">Every curve, restored to factory.</p>
-        </div>
-      </div>
+  <!-- SERVICES -->
+  <section class="services" id="services" aria-label="Service index">
+    <p class="services__intro">Service index — 04 disciplines</p>
 
-      <div class="hero-cue" data-hero-cue aria-hidden="true">Scroll</div>
+    <hr class="divider">
+    <article class="service">
+      <span class="service__index">01</span>
+      <h3 class="service__name">Paint correction &amp; PPF</h3>
+      <p class="service__desc">Multi-stage correction measured to the micron, sealed under optically clear film cut to pattern — never trimmed on paint.</p>
+    </article>
 
+    <hr class="divider">
+    <article class="service">
+      <span class="service__index">02</span>
+      <h3 class="service__name">Aluminum &amp; carbon bodywork</h3>
+      <p class="service__desc">Panel shaping on English wheels and composite repair on vacuum benches. No pull racks, no filler sculpture.</p>
+    </article>
+
+    <hr class="divider">
+    <article class="service">
+      <span class="service__index">03</span>
+      <h3 class="service__name">Factory-spec restoration</h3>
+      <p class="service__desc">Nut-and-bolt rebuilds documented against original factory drawings, with every torque value logged.</p>
+    </article>
+
+    <hr class="divider">
+    <article class="service">
+      <span class="service__index">04</span>
+      <h3 class="service__name">Concours detailing</h3>
+      <p class="service__desc">Preparation for judged lawns — every fastener, every seam, every date stamp accounted for.</p>
+    </article>
+    <hr class="divider">
+
+    <p style="margin: var(--spacing-41) 0 0;">
+      <a class="btn-ghost" href="#contact">Request the full index</a>
+    </p>
+  </section>
+
+  <!-- ATELIER — photographic band -->
+  <section class="band" id="atelier" aria-label="The atelier">
+    <img
+      class="band__photo"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260708_180456_8c4eca01-5777-4577-80a7-7cd2624dff5c.png"
+      alt="Black sports car in perfect side profile, warm rim light tracing the roofline"
+      loading="lazy"
+    >
+    <div class="band__caption">
+      <p class="label" style="margin: 0 0 var(--spacing-12);">The atelier</p>
+      <h2 class="heading">Every curve, restored to intent.</h2>
     </div>
   </section>
 
-  <section class="hero-after">
-    <a class="btn-outline" href="#estimate">Book an estimate</a>
+  <!-- REVEAL 02 — void mode, flipped -->
+  <section class="reveal reveal--flip" aria-label="Craft and measurement">
+    <h2 class="heading reveal__heading">Measured in microns. Finished by hand.</h2>
+    <figure class="reveal__figure">
+      <img
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260708_180458_2864d164-e761-4b8a-b029-e75623306e00.png"
+        alt="Forged alloy wheel and carbon-ceramic brake, rim-lit in warm darkness"
+        loading="lazy"
+      >
+    </figure>
+    <p class="voice reveal__body">Torque is logged. Paint depth is mapped. But the last pass is always a human hand under warm light — because instruments can't feel an edge. Yours can.</p>
   </section>
+
+  <hr class="divider">
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact" aria-label="Book an estimate">
+    <h2 class="heading">The bay is open.<br>The calendar isn't.</h2>
+
+    <form class="contact__form" data-estimate-form>
+      <div class="field">
+        <label class="label" for="f-name" style="display:block; margin-bottom: var(--spacing-8);">Name</label>
+        <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+      </div>
+      <div class="field">
+        <label class="label" for="f-email" style="display:block; margin-bottom: var(--spacing-8);">Email</label>
+        <input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label class="label" for="f-car" style="display:block; margin-bottom: var(--spacing-8);">The car</label>
+        <textarea id="f-car" name="car" rows="2" placeholder="Year, marque, and what it needs" required></textarea>
+      </div>
+      <div class="contact__actions">
+        <button class="btn-pill" type="submit">Book an estimate</button>
+        <a class="link-underline" href="tel:+13055550197">Or call the shop</a>
+      </div>
+    </form>
+  </section>
+
+  <footer class="footer">
+    <hr class="divider">
+    <div class="footer__row">
+      <p class="footer__legal">* Paint depth measured to ±1 micron. Insurance approved. By appointment only. Loco Exotics is not affiliated with any vehicle manufacturer.</p>
+      <p class="footer__credit">Imagery generated with <a href="https://higgsfield.ai">Higgsfield</a> · Design reference: Oryzo</p>
+    </div>
+  </footer>
+
+  <!-- Video overlay — the reveal film -->
+  <div class="film" data-film hidden>
+    <video
+      data-film-video
+      controls
+      playsinline
+      preload="none"
+      poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260706_183629_e109f3e0-4a80-4eea-ad25-22d7196ebffa.png"
+    >
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260706_184751_a75afc4e-a347-4ca7-933c-2e9c39ac6cd4.mp4" type="video/mp4">
+    </video>
+    <button class="btn-ghost" type="button" data-film-close>Close</button>
+  </div>
 
 </body>
 </html>
