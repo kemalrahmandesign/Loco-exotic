@@ -71,15 +71,28 @@
         name: el.getAttribute('data-pin-name'),
         video: video,
         reverse: video ? video.hasAttribute('data-scrub-reverse') : false,
-        caption: el.querySelector('[data-pin-caption]')
+        caption: el.querySelector('[data-pin-caption]'),
+        vt: 0 // smoothed video time
       };
     }
   );
 
-  function scrubVideo(video, p, rev) {
+  /* Scrub with its own easing: the displayed frame chases the
+     scroll-derived time, and we never queue a seek while one is
+     still in flight — the two things that made scrubbing stutter. */
+  function scrubVideo(pin, p) {
+    var video = pin.video;
     if (!video || video.readyState < 1 || !video.duration) return;
-    var t = (rev ? 1 - p : p) * (video.duration - 0.05);
-    if (Math.abs(video.currentTime - t) > 0.02) video.currentTime = t;
+    var t = (pin.reverse ? 1 - p : p) * (video.duration - 0.05);
+    pin.vt += (t - pin.vt) * 0.22;
+    if (video.seeking) return;
+    var delta = Math.abs(video.currentTime - pin.vt);
+    if (delta < 1 / 30) return;
+    if (delta > 0.5 && typeof video.fastSeek === 'function') {
+      video.fastSeek(pin.vt);
+    } else {
+      video.currentTime = pin.vt;
+    }
   }
 
   /* Per-section choreography */
@@ -88,12 +101,13 @@
   var gearEl = document.querySelector('[data-gear]');
   var gearBeats = document.querySelectorAll('[data-gear-beat]');
   var gearHint = document.querySelector('.gear-stage__hint');
-  var streaksImg = document.querySelector('[data-streaks-img]');
+  var streaksBase = document.querySelector('[data-streaks-base]');
+  var streakBands = document.querySelectorAll('[data-streak-band]');
   var streakRows = document.querySelectorAll('[data-streak-row]');
 
   var handlers = {
     hero: function (pin, p) {
-      scrubVideo(pin.video, p, false);
+      scrubVideo(pin, p);
       if (heroLockup) {
         heroLockup.style.transform = 'translateY(' + (p * -70) + 'px)';
         heroLockup.style.opacity = String(1 - fade(p, 0.5, 0.85));
@@ -103,17 +117,18 @@
 
     gear: function (pin, p) {
       // Tunnel approach: gear starts small, swells until its dark
-      // bore swallows the viewport.
+      // bore swallows the viewport by ~0.9 — the next section's
+      // film starts equally dark, so the handoff reads seamless.
       if (gearEl) {
-        var scale = 0.42 + Math.pow(p, 1.35) * 4.6;
+        var scale = 0.42 + Math.pow(fade(p, 0, 0.92), 1.35) * 5.2;
         gearEl.style.transform = 'rotate(' + (p * 200) + 'deg) scale(' + scale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.14 + (i / n) * 0.8;
-        var end = 0.14 + ((i + 1) / n) * 0.8;
-        var vis = fade(p, start, start + 0.06) * (1 - fade(p, end - 0.06, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.06) * (1 - fade(p, 0.97, 1));
+        var start = 0.1 + (i / n) * 0.72;
+        var end = 0.1 + ((i + 1) / n) * 0.72;
+        var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
+        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.88, 0.94));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
@@ -121,23 +136,29 @@
     },
 
     exit: function (pin, p) {
-      // Shoot out of the headlight: the film starts inside the
-      // lens (dark) and pulls back to the full car, lights on.
-      scrubVideo(pin.video, p, false);
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.78);
+      // Shoot out of the headlight: the film starts as near-black
+      // (matching the gear bore), rolls level as it pulls out to
+      // the full car, lights igniting at the end.
+      scrubVideo(pin, p);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.8);
     },
 
     streaks: function (pin, p) {
-      // Taillight trails reveal top to bottom; each row of text
-      // arrives with its band of light.
-      if (streaksImg) {
-        var cut = (1 - fade(p, 0.05, 0.85)) * 100;
-        streaksImg.style.clipPath = 'inset(0 0 ' + cut + '% 0)';
+      // A real taillight first; then its light stretches into
+      // horizontal trails, one band at a time, top to bottom,
+      // each band carrying its own line of text.
+      if (streaksBase) {
+        streaksBase.style.opacity = String(1 - fade(p, 0.3, 0.75) * 0.82);
       }
-      var n = streakRows.length;
+      var n = streakBands.length;
+      streakBands.forEach(function (band, i) {
+        var at = 0.14 + i * 0.17;
+        var vis = fade(p, at, at + 0.11);
+        band.style.clipPath = 'inset(0 ' + ((1 - vis) * 100) + '% 0 0)';
+      });
       streakRows.forEach(function (row, i) {
-        var at = 0.12 + (i / n) * 0.7;
-        var vis = fade(p, at, at + 0.08);
+        var at = 0.17 + i * 0.17;
+        var vis = fade(p, at, at + 0.1);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
@@ -146,7 +167,7 @@
     lift: function (pin, p) {
       // Film was generated as the car lowering; scrubbed in
       // reverse so the car rises as you scroll down.
-      scrubVideo(pin.video, p, pin.reverse);
+      scrubVideo(pin, p);
       if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.15);
     }
   };
@@ -169,7 +190,7 @@
      ---------------------------------------------------------- */
   function loop() {
     if (hijack) {
-      current += (target - current) * 0.085;
+      current += (target - current) * 0.06;
       if (Math.abs(target - current) < 0.1) current = target;
       if (Math.abs(window.scrollY - current) >= 0.5) window.scrollTo(0, current);
     } else {
