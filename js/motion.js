@@ -1,7 +1,7 @@
-/* LOCO EXOTICS — motion engine
-   Momentum wheel-scroll, scrubbed hero film, word-mask reveals,
-   parallax bands, drawn dividers. All of it disabled under
-   prefers-reduced-motion. */
+/* LOUDOUN COUNTY EXOTICS — motion engine
+   Momentum wheel-scroll, gear spin-and-zoom, scrubbed paint sweep,
+   one-shot ignition film, ambient loops, word-mask reveals.
+   Everything is disabled under prefers-reduced-motion. */
 (function () {
   'use strict';
 
@@ -10,12 +10,12 @@
   if (reduced) html.classList.add('reduced');
 
   var clamp = function (v, lo, hi) { return Math.min(hi, Math.max(lo, v)); };
+  var fade = function (p, a, b) { return clamp((p - a) / (b - a), 0, 1); };
 
   /* ----------------------------------------------------------
-     Momentum smooth scroll — wheel events are intercepted and
-     eased toward a target, so native layout (sticky hero, fixed
-     nav, anchors) keeps working. Touch devices keep native
-     scrolling; parallax and the scrub still follow along.
+     Momentum smooth scroll — wheel input eased toward a target,
+     so native layout (sticky gear stage, fixed nav, anchors)
+     keeps working. Touch devices keep native scrolling.
      ---------------------------------------------------------- */
   var target = window.scrollY;
   var current = window.scrollY;
@@ -43,82 +43,100 @@
         target = current = window.scrollY;
       }
     }, { passive: true });
+  }
 
-    // Nav anchors ease through the momentum target instead of jumping.
-    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
-      a.addEventListener('click', function (e) {
-        var dest = document.getElementById(a.getAttribute('href').slice(1));
-        if (!dest) return;
+  // All in-page anchors ease through the momentum target.
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var dest = document.getElementById(a.getAttribute('href').slice(1));
+      if (!dest) return;
+      if (hijack) {
         e.preventDefault();
         target = clamp(dest.getBoundingClientRect().top + window.scrollY, 0, maxScroll());
-      });
+      }
     });
-  }
+  });
 
   /* ----------------------------------------------------------
-     Hero — pinned track, film scrubbed by scroll progress,
-     lockup drifting and fading as the scrub plays.
+     Hero — ambient film with gentle parallax; lockup drifts
+     up and fades as you leave the viewport.
      ---------------------------------------------------------- */
-  var heroTrack = document.querySelector('[data-hero-track]');
+  var hero = document.querySelector('.hero');
   var heroFilm = document.querySelector('[data-hero-film]');
   var heroLockup = document.querySelector('[data-hero-lockup]');
-  var heroBeat = document.querySelector('[data-hero-beat]');
-  var heroCue = document.querySelector('[data-hero-cue]');
-  var filmDuration = 0;
-
-  if (heroFilm) {
-    heroFilm.addEventListener('loadedmetadata', function () {
-      filmDuration = heroFilm.duration || 0;
-    });
-    heroFilm.load();
-  }
-
-  function fade(p, a, b) { return clamp((p - a) / (b - a), 0, 1); }
 
   function heroFrame() {
-    if (!heroTrack || reduced) return;
-    var span = heroTrack.offsetHeight - window.innerHeight;
-    if (span <= 0) return;
-    var p = clamp(current / span, 0, 1);
-
-    if (filmDuration && heroFilm.readyState >= 1) {
-      var t = p * (filmDuration - 0.05);
-      if (Math.abs(heroFilm.currentTime - t) > 0.02) heroFilm.currentTime = t;
-    }
-
+    if (!hero || reduced) return;
+    var h = hero.offsetHeight;
+    var p = clamp(current / h, 0, 1);
+    if (heroFilm) heroFilm.style.transform = 'translateY(' + (p * h * 0.18) + 'px)';
     if (heroLockup) {
-      heroLockup.style.transform = 'translateY(' + (p * -70) + 'px)';
-      heroLockup.style.opacity = String(1 - fade(p, 0.35, 0.62));
-    }
-    if (heroBeat) {
-      var vis = fade(p, 0.45, 0.62) * (1 - fade(p, 0.82, 0.96));
-      heroBeat.style.opacity = String(vis);
-      heroBeat.style.transform = 'translateY(' + ((1 - vis) * 24) + 'px)';
-    }
-    if (heroCue) {
-      heroCue.style.opacity = String(1 - fade(p, 0.02, 0.12));
+      heroLockup.style.transform = 'translateY(' + (p * -60) + 'px)';
+      heroLockup.style.opacity = String(1 - fade(p, 0.35, 0.75));
     }
   }
 
   /* ----------------------------------------------------------
-     Parallax bands — media drifts against scroll.
+     Gear — pinned stage: the gear spins and the camera zooms
+     into its dark center; service beats crossfade inside it.
      ---------------------------------------------------------- */
-  var parallaxEls = Array.prototype.map.call(
-    document.querySelectorAll('[data-parallax]'),
-    function (el) {
-      return { el: el, factor: parseFloat(el.getAttribute('data-parallax')) || 0.12 };
-    }
-  );
+  var gearTrack = document.querySelector('[data-gear-track]');
+  var gearEl = document.querySelector('[data-gear]');
+  var gearBeats = document.querySelectorAll('[data-gear-beat]');
+  var gearHint = document.querySelector('.gear-stage__hint');
 
-  function parallaxFrame() {
-    if (reduced) return;
-    parallaxEls.forEach(function (item) {
-      var host = item.el.parentElement;
-      var rect = host.getBoundingClientRect();
-      if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-      var centerDelta = rect.top + rect.height / 2 - window.innerHeight / 2;
-      item.el.style.transform = 'translateY(' + (centerDelta * item.factor) + 'px)';
+  function gearFrame() {
+    if (!gearTrack || reduced) return;
+    var rect = gearTrack.getBoundingClientRect();
+    var span = gearTrack.offsetHeight - window.innerHeight;
+    if (span <= 0) return;
+    var p = clamp(-rect.top / span, 0, 1);
+    if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+
+    // Spin + zoom toward the hollow center.
+    if (gearEl) {
+      var zoom = 1 + fade(p, 0, 0.35) * 1.15; // settle once the text arrives
+      gearEl.style.transform = 'rotate(' + (p * 240) + 'deg) scale(' + zoom + ')';
+      gearEl.style.opacity = String(0.4 + 0.6 * fade(p, 0, 0.15));
+    }
+
+    // Four beats crossfading in the dark center.
+    var n = gearBeats.length;
+    gearBeats.forEach(function (beat, i) {
+      var start = 0.12 + (i / n) * 0.84;
+      var end = 0.12 + ((i + 1) / n) * 0.84;
+      var vis = fade(p, start, start + 0.07) * (1 - fade(p, end - 0.07, end));
+      if (i === n - 1) vis = fade(p, start, start + 0.07); // last beat holds
+      beat.style.opacity = String(vis);
+      beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
     });
+
+    if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.05, 0.15)) * 0.9);
+  }
+
+  /* ----------------------------------------------------------
+     Paint band — light sweep scrubbed by scroll position.
+     ---------------------------------------------------------- */
+  var scrubFilm = document.querySelector('[data-scrub-film]');
+  var scrubDuration = 0;
+
+  if (scrubFilm) {
+    scrubFilm.addEventListener('loadedmetadata', function () {
+      scrubDuration = scrubFilm.duration || 0;
+    });
+    scrubFilm.load();
+  }
+
+  function scrubFrame() {
+    if (!scrubFilm || reduced || !scrubDuration) return;
+    var host = scrubFilm.parentElement;
+    var rect = host.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+    var p = clamp((window.innerHeight - rect.top) / (window.innerHeight + rect.height), 0, 1);
+    var t = p * (scrubDuration - 0.05);
+    if (scrubFilm.readyState >= 1 && Math.abs(scrubFilm.currentTime - t) > 0.02) {
+      scrubFilm.currentTime = t;
+    }
   }
 
   /* ----------------------------------------------------------
@@ -128,14 +146,13 @@
     if (hijack) {
       current += (target - current) * 0.085;
       if (Math.abs(target - current) < 0.1) current = target;
-      if (Math.abs(window.scrollY - current) >= 0.5) {
-        window.scrollTo(0, current);
-      }
+      if (Math.abs(window.scrollY - current) >= 0.5) window.scrollTo(0, current);
     } else {
       current = window.scrollY;
     }
     heroFrame();
-    parallaxFrame();
+    gearFrame();
+    scrubFrame();
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
@@ -165,9 +182,9 @@
       splitWords(el, 70);
     });
 
-    // Page-load intro: wordmark rises, tagline/serial/cue fade in.
     window.addEventListener('load', function () {
-      document.querySelector('.hero').classList.add('is-loaded');
+      if (hero) hero.classList.add('is-in');
+      if (introWords) introWords.closest('.hero__lockup').classList.add('is-in');
       document.querySelectorAll('[data-intro-fade]').forEach(function (el) {
         el.classList.add('is-in');
       });
@@ -189,23 +206,39 @@
       });
     }, { rootMargin: '0px 0px -12% 0px' });
 
-    document.querySelectorAll('[data-reveal], [data-draw], [data-scale], [data-split]')
+    document.querySelectorAll('[data-reveal], [data-draw], [data-split]')
       .forEach(function (el) { io.observe(el); });
   }
 
   /* ----------------------------------------------------------
-     Looping films play only while on screen.
+     Films: ambient loops play only on screen; the ignition
+     film plays exactly once when its band enters.
      ---------------------------------------------------------- */
-  var loops = document.querySelectorAll('[data-loop-film]');
   if ('IntersectionObserver' in window && !reduced) {
-    var filmIo = new IntersectionObserver(function (entries) {
+    var loopIo = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         var v = entry.target;
         if (entry.isIntersecting) v.play().catch(function () {});
         else v.pause();
       });
-    }, { rootMargin: '20% 0px' });
-    loops.forEach(function (v) { filmIo.observe(v); });
+    }, { rootMargin: '15% 0px' });
+    document.querySelectorAll('[data-loop-film]').forEach(function (v) {
+      loopIo.observe(v);
+    });
+
+    var igniteFilm = document.querySelector('[data-ignite-film]');
+    if (igniteFilm) {
+      var ignited = false;
+      var igniteIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting || ignited) return;
+          ignited = true;
+          igniteFilm.play().catch(function () {});
+          igniteIo.disconnect();
+        });
+      }, { threshold: 0.55 });
+      igniteIo.observe(igniteFilm);
+    }
   }
 
   /* ----------------------------------------------------------
@@ -227,25 +260,39 @@
           if (s.el === entry.target) s.item.classList.add('is-active');
         });
       });
-    }, { rootMargin: '-40% 0px -55% 0px' });
+    }, { rootMargin: '-30% 0px -55% 0px' });
     sections.forEach(function (s) { navIo.observe(s.el); });
   }
 
   /* ----------------------------------------------------------
-     Estimate form → prefilled email (static site, no backend)
+     Mobile quick-book pill — hidden while #book is on screen.
      ---------------------------------------------------------- */
-  var form = document.querySelector('[data-estimate-form]');
-  if (form) {
+  var bookPill = document.querySelector('[data-book-pill]');
+  var bookSection = document.getElementById('book');
+  if (bookPill && bookSection && 'IntersectionObserver' in window) {
+    var pillIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        bookPill.classList.toggle('is-hidden', entry.isIntersecting);
+      });
+    }, { threshold: 0.1 });
+    pillIo.observe(bookSection);
+  }
+
+  /* ----------------------------------------------------------
+     Booking form — front-end only for now (no backend wired):
+     validate, then swap in the confirmation block.
+     ---------------------------------------------------------- */
+  var form = document.querySelector('[data-book-form]');
+  var done = document.querySelector('[data-book-done]');
+  if (form && done) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var data = new FormData(form);
-      var subject = 'Estimate request — ' + (data.get('name') || '');
-      var body = 'Name: ' + (data.get('name') || '') +
-        '\nEmail: ' + (data.get('email') || '') +
-        '\n\nThe car:\n' + (data.get('car') || '');
-      window.location.href = 'mailto:bookings@locoexotics.com' +
-        '?subject=' + encodeURIComponent(subject) +
-        '&body=' + encodeURIComponent(body);
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      form.hidden = true;
+      done.hidden = false;
     });
   }
 })();

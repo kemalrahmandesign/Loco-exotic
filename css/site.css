@@ -1,4 +1,4 @@
-/* LOCO EXOTICS — darkroom editorial, motion pass
+/* LOUDOUN COUNTY EXOTICS — darkroom editorial
    Two surfaces, one accent, no shadows. Depth comes from the films. */
 
 *,
@@ -6,13 +6,11 @@
 *::after { box-sizing: border-box; }
 
 html {
-  /* native fallback; momentum scroller takes over when JS runs */
   scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
-html.js.momentum {
-  scroll-behavior: auto;
-}
+html.js.momentum { scroll-behavior: auto; }
 
 body {
   margin: 0;
@@ -29,6 +27,8 @@ body {
 
 img, video { display: block; max-width: 100%; }
 
+[hidden] { display: none !important; }
+
 a { color: var(--color-warm-cream); }
 
 ::selection {
@@ -44,10 +44,12 @@ a { color: var(--color-warm-cream); }
 .voice {
   text-transform: none;
   font-weight: var(--font-weight-regular);
-  font-size: clamp(22px, 2.2vw, var(--text-body));
+  font-size: clamp(20px, 2.1vw, var(--text-body));
   line-height: var(--leading-body);
   margin: 0;
 }
+
+.voice a { color: var(--color-warm-cream); text-underline-offset: 3px; }
 
 .display {
   font-size: clamp(var(--text-display), 9vw, 128px);
@@ -96,6 +98,21 @@ a { color: var(--color-warm-cream); }
 
 .btn-pill:hover { background: #4a3220; }
 
+.btn-ghost {
+  display: inline-block;
+  background: transparent;
+  color: var(--color-warm-cream);
+  border: 1px solid var(--color-warm-cream);
+  border-radius: var(--radius-buttons-outlined);
+  padding: 7.5px var(--spacing-18);
+  font: inherit;
+  font-size: 12px;
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .link-underline {
   color: var(--color-warm-cream);
   font-size: 12px;
@@ -116,7 +133,6 @@ a { color: var(--color-warm-cream); }
   padding: var(--spacing-24);
   background: transparent;
   pointer-events: none;
-  mix-blend-mode: difference;
 }
 
 .nav a { pointer-events: auto; }
@@ -150,14 +166,9 @@ a { color: var(--color-warm-cream); }
 .nav__item:hover::after,
 .nav__item.is-active::after { transform: scaleX(1); }
 
-/* ---------- Hero — pinned scrub film ---------- */
-.hero-track {
-  height: 300vh;
-}
-
+/* ---------- Hero — ambient living wallpaper ---------- */
 .hero {
-  position: sticky;
-  top: 0;
+  position: relative;
   height: 100svh;
   overflow: hidden;
 }
@@ -168,6 +179,7 @@ a { color: var(--color-warm-cream); }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  will-change: transform;
 }
 
 /* warm canvas wash for legibility — never a shadow */
@@ -178,17 +190,18 @@ a { color: var(--color-warm-cream); }
   background: linear-gradient(
     to bottom,
     rgba(16, 9, 4, 0.5) 0%,
-    rgba(16, 9, 4, 0.08) 45%,
-    rgba(16, 9, 4, 0.5) 100%
+    rgba(16, 9, 4, 0.06) 55%,
+    rgba(16, 9, 4, 0.45) 100%
   );
   pointer-events: none;
 }
 
 .hero > :not(.hero__film) { position: relative; z-index: 1; }
 
+/* Text lives in the empty upper two-thirds of the frame */
 .hero__lockup {
   position: absolute;
-  top: clamp(96px, 18vh, 180px);
+  top: clamp(96px, 16vh, 170px);
   left: var(--spacing-24);
   right: var(--spacing-24);
   will-change: transform, opacity;
@@ -197,6 +210,19 @@ a { color: var(--color-warm-cream); }
 .hero__tagline {
   font-size: 12px;
   margin: 0 0 var(--spacing-14);
+}
+
+.hero__sub {
+  font-size: var(--text-subheading);
+  line-height: var(--leading-subheading);
+  margin: var(--spacing-18) 0 0;
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-24);
+  margin-top: var(--spacing-31);
 }
 
 .hero__serial {
@@ -208,15 +234,6 @@ a { color: var(--color-warm-cream); }
   font-size: 10px;
   white-space: nowrap;
   margin: 0;
-}
-
-.hero__beat {
-  position: absolute;
-  left: var(--spacing-24);
-  bottom: 18vh;
-  max-width: 420px;
-  opacity: 0;
-  will-change: transform, opacity;
 }
 
 .hero__cue {
@@ -242,7 +259,7 @@ a { color: var(--color-warm-cream); }
 
 /* ---------- Statement ---------- */
 .statement {
-  padding: var(--spacing-204) var(--spacing-24);
+  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
   max-width: 1200px;
 }
 
@@ -271,7 +288,7 @@ a { color: var(--color-warm-cream); }
 .marquee__track span { flex: none; }
 
 html.js:not(.reduced) .marquee__track {
-  animation: marquee 36s linear infinite;
+  animation: marquee 40s linear infinite;
 }
 
 @keyframes marquee {
@@ -279,64 +296,85 @@ html.js:not(.reduced) .marquee__track {
   to   { transform: translateX(-50%); }
 }
 
-/* ---------- Services ---------- */
-.services {
-  padding: var(--spacing-204) var(--spacing-24);
-}
+/* ---------- Services — pinned spinning gear ---------- */
+.gear-track { height: 340vh; }
 
-.services__intro { margin: 0 0 var(--spacing-68); }
-
-.service {
+.gear-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
   display: grid;
-  grid-template-columns: var(--spacing-68) 1fr minmax(0, 44%);
-  gap: var(--element-gap);
-  align-items: baseline;
-  padding: var(--spacing-41) 0 0;
+  place-items: center;
 }
 
-.service__index {
+.gear-stage__gear {
+  grid-area: 1 / 1;
+  width: min(72vh, 88vw);
+  height: auto;
+  will-change: transform;
+}
+
+.gear-stage__beats {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.gear-beat {
+  grid-area: 1 / 1;
+  max-width: min(46vh, 78vw);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.gear-beat__index {
+  display: block;
   font-size: 12px;
   color: var(--color-driftwood);
+  margin-bottom: var(--spacing-12);
 }
 
-.service__name {
-  font-size: clamp(var(--text-heading-sm), 2.6vw, 31px);
-  line-height: var(--leading-heading-sm);
+.gear-beat__name {
+  font-size: clamp(20px, 3.4vh, 31px);
+  line-height: 1.05;
   font-weight: var(--font-weight-medium);
   margin: 0;
 }
 
-.service__desc {
-  text-transform: none;
-  font-weight: var(--font-weight-regular);
-  font-size: 15px;
-  line-height: 1.4;
+.gear-beat__sub {
+  font-size: 12px;
+  color: var(--color-driftwood);
+  margin: var(--spacing-12) 0 0;
+}
+
+.gear-stage__hint {
+  position: absolute;
+  left: 50%;
+  bottom: var(--spacing-24);
+  transform: translateX(-50%);
   margin: 0;
-  color: var(--color-warm-cream);
 }
 
-.service__rule {
-  grid-column: 1 / -1;
-  margin-top: var(--spacing-41);
+.services-cta {
+  display: flex;
+  justify-content: center;
+  padding: var(--spacing-68) var(--spacing-24);
 }
 
-/* ---------- Film / photo bands ---------- */
+/* ---------- Film bands (paint / ignition / facility) ---------- */
 .band {
   position: relative;
   height: 100vh;
   overflow: hidden;
 }
 
-.band--short { height: 72vh; }
-
-.band__media {
+.band__film {
   position: absolute;
-  inset: -12% 0;
-  will-change: transform;
-}
-
-.band__media img,
-.band__media video {
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -350,44 +388,106 @@ html.js:not(.reduced) .marquee__track {
   z-index: 1;
 }
 
-.band__caption .label { display: block; margin: 0 0 var(--spacing-14); color: var(--color-warm-cream); }
+.band__caption .label {
+  display: block;
+  margin: 0 0 var(--spacing-14);
+  color: var(--color-warm-cream);
+}
 
-.band__caption .heading { max-width: 12em; }
+.band__caption .heading { max-width: 13em; }
 
-/* ---------- Void-mode reveal ---------- */
-.reveal {
-  min-height: 100vh;
+/* ---------- Reviews ---------- */
+.reviews {
+  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
+}
+
+.reviews__heading { margin: var(--spacing-31) 0 var(--spacing-68); }
+
+.review { padding-top: var(--spacing-41); }
+
+.review__rule { margin-bottom: var(--spacing-41); }
+
+.review__stars {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 6px;
+  margin-bottom: var(--spacing-18);
+}
+
+.review__quote {
+  text-transform: none;
+  font-weight: var(--font-weight-regular);
+  font-size: clamp(20px, 2.1vw, var(--text-body));
+  line-height: var(--leading-body);
+  margin: 0 0 var(--spacing-18);
+  max-width: 30em;
+}
+
+.review__meta {
+  font-size: 12px;
+  color: var(--color-driftwood);
+  margin: 0;
+}
+
+/* ---------- Visit ---------- */
+.visit {
+  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
+}
+
+.visit__grid {
   display: grid;
-  grid-template-columns: 1fr minmax(0, 40%) 1fr;
-  gap: var(--element-gap);
-  align-items: center;
-  padding: var(--spacing-68) var(--spacing-24);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-41) var(--element-gap);
+  margin-top: var(--spacing-68);
 }
 
-.reveal__heading { text-align: left; }
+.visit__label { margin: 0 0 var(--spacing-14); }
 
-.reveal__figure { margin: 0; will-change: transform; }
-
-.reveal__figure video { width: 100%; }
-
-.reveal__body { text-align: left; }
-
-/* ---------- Contact ---------- */
-.contact {
-  min-height: 100vh;
-  padding: var(--spacing-68) var(--spacing-24);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--spacing-68);
+.visit__value {
+  font-style: normal;
+  font-size: var(--text-subheading);
+  line-height: 1.4;
+  margin: 0 0 var(--spacing-18);
 }
 
-.contact__form {
-  max-width: 560px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-31);
+.visit__phone {
+  font-size: clamp(31px, 3.4vw, var(--text-heading));
+  line-height: var(--leading-heading);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-cork-border);
 }
+
+.visit__fax {
+  font-size: 12px;
+  color: var(--color-driftwood);
+}
+
+.visit__serving {
+  margin: var(--spacing-68) 0 0;
+  font-size: 12px;
+  color: var(--color-driftwood);
+}
+
+/* ---------- Book ---------- */
+.book {
+  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: var(--spacing-68) var(--spacing-68);
+  align-items: start;
+}
+
+.book__note { margin-top: var(--spacing-31); max-width: 22em; }
+
+.book__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-31) var(--spacing-24);
+  max-width: 720px;
+}
+
+.book__form .field:nth-last-child(2),
+.book__form .book__actions { grid-column: 1 / -1; }
 
 .field__label {
   display: block;
@@ -396,6 +496,7 @@ html.js:not(.reduced) .marquee__track {
 }
 
 .field input,
+.field select,
 .field textarea {
   width: 100%;
   background: transparent;
@@ -409,6 +510,16 @@ html.js:not(.reduced) .marquee__track {
   text-transform: uppercase;
   padding: var(--spacing-8) 36px var(--spacing-8) 2px;
   outline: none;
+  appearance: none;
+}
+
+.field select { cursor: pointer; }
+
+.field select:invalid { color: var(--color-driftwood); }
+
+.field option {
+  background: var(--color-walnut-shadow);
+  color: var(--color-warm-cream);
 }
 
 .field input::placeholder,
@@ -417,13 +528,13 @@ html.js:not(.reduced) .marquee__track {
   text-transform: uppercase;
 }
 
+.field input[type="date"] { min-height: 34px; }
+
 .field textarea { resize: vertical; min-height: 68px; }
 
-.contact__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-24);
-}
+.book__done { grid-column: 2; }
+
+.book__done .voice { margin-top: var(--spacing-24); }
 
 /* ---------- Footer ---------- */
 .footer {
@@ -443,10 +554,12 @@ html.js:not(.reduced) .marquee__track {
 .footer__legal {
   font-family: var(--font-legal);
   font-size: 8px;
-  line-height: 1.2;
+  line-height: 1.4;
   font-weight: var(--font-weight-medium);
   color: var(--color-driftwood);
   margin: 0;
+  max-width: 560px;
+  text-transform: uppercase;
 }
 
 .footer__credit {
@@ -460,21 +573,40 @@ html.js:not(.reduced) .marquee__track {
   text-underline-offset: 3px;
 }
 
+/* ---------- Mobile quick-book pill ---------- */
+.book-pill {
+  position: fixed;
+  right: var(--spacing-18);
+  bottom: var(--spacing-18);
+  z-index: 50;
+  display: none;
+  background: var(--color-bark-brown);
+  color: var(--color-warm-cream);
+  border-radius: var(--radius-buttons-pill);
+  padding: var(--spacing-12) var(--spacing-24);
+  font-size: 12px;
+  text-decoration: none;
+  transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
+}
+
+.book-pill.is-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+
 /* =====================================================
    MOTION STATES — applied only when JS runs, and
    neutralized entirely under prefers-reduced-motion.
    ===================================================== */
 
-/* Intro (page-load) fades */
 html.js:not(.reduced) [data-intro-fade] {
   opacity: 0;
-  transition: opacity 1.4s var(--ease-out-expo);
+  transition: opacity 1.4s var(--ease-out-expo) 0.3s;
 }
 
-html.js:not(.reduced) .is-loaded [data-intro-fade],
 html.js:not(.reduced) [data-intro-fade].is-in { opacity: 1; }
 
-/* Word-mask reveals (hero wordmark + split headings) */
 html.js:not(.reduced) .word {
   display: inline-block;
   overflow: clip;
@@ -490,10 +622,8 @@ html.js:not(.reduced) .word > span {
   transition-delay: var(--word-delay, 0s);
 }
 
-html.js:not(.reduced) .is-in .word > span,
-html.js:not(.reduced) .is-loaded .word > span { transform: translateY(0); }
+html.js:not(.reduced) .is-in .word > span { transform: translateY(0); }
 
-/* Scroll reveals */
 html.js:not(.reduced) [data-reveal] {
   opacity: 0;
   transform: translateY(32px);
@@ -507,7 +637,6 @@ html.js:not(.reduced) [data-reveal].is-in {
   transform: translateY(0);
 }
 
-/* Divider draw-in */
 html.js:not(.reduced) [data-draw] {
   transform: scaleX(0);
   transform-origin: left;
@@ -516,50 +645,38 @@ html.js:not(.reduced) [data-draw] {
 
 html.js:not(.reduced) [data-draw].is-in { transform: scaleX(1); }
 
-/* Media scale-settle */
-html.js:not(.reduced) [data-scale] {
-  opacity: 0;
-  transform: scale(1.1);
-  transition:
-    opacity 1.2s var(--ease-out-expo),
-    transform 1.6s var(--ease-out-expo);
-}
-
-html.js:not(.reduced) [data-scale].is-in {
-  opacity: 1;
-  transform: scale(1);
-}
-
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-track { height: auto; }
-  .hero { position: relative; }
-  .hero__cue { display: none; }
-  .hero__beat { opacity: 1; position: static; margin: var(--spacing-24); }
   .marquee__track { animation: none; }
+  .hero__cue { display: none; }
+  .gear-track { height: auto; }
+  .gear-stage { position: relative; height: auto; padding: var(--spacing-68) var(--spacing-24); }
+  .gear-stage__gear { display: none; }
+  .gear-stage__beats { position: relative; display: block; }
+  .gear-beat { opacity: 1; position: relative; margin-bottom: var(--spacing-41); max-width: none; }
+  .gear-stage__hint { display: none; }
 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
-  .reveal {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-41);
-  }
-
-  .service {
-    grid-template-columns: var(--spacing-41) 1fr;
-  }
-
-  .service__desc { grid-column: 2; }
-
-  .statement__body { margin-left: 0; }
-
   .hero__serial { display: none; }
 
-  .hero__beat { max-width: 300px; bottom: 22vh; }
+  .hero__actions { flex-wrap: wrap; gap: var(--spacing-18); }
 
-  .band--short { height: 48vh; }
+  .visit__grid { grid-template-columns: 1fr; }
+
+  .book { grid-template-columns: 1fr; }
+
+  .book__form { grid-template-columns: 1fr; }
+
+  .book__done { grid-column: 1; }
+
+  .band { height: 72vh; }
+
+  .band--ignite { height: 100vh; }
 
   .nav__items { gap: var(--spacing-14); }
+
+  .book-pill { display: inline-block; }
 }
