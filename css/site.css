@@ -166,12 +166,62 @@ a { color: var(--color-warm-cream); }
 .nav__item:hover::after,
 .nav__item.is-active::after { transform: scaleX(1); }
 
-/* ---------- Hero — ambient living wallpaper ---------- */
-.hero {
-  position: relative;
+/* ---------- Pinned scrub sections ---------- */
+.pin { position: relative; }
+
+.pin--hero    { height: 260vh; }
+.pin--gear    { height: 340vh; }
+.pin--exit    { height: 300vh; }
+.pin--streaks { height: 280vh; }
+.pin--lift    { height: 240vh; }
+
+.pin__stage {
+  position: sticky;
+  top: 0;
   height: 100svh;
   overflow: hidden;
 }
+
+.pin__film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pin__caption {
+  position: absolute;
+  left: var(--spacing-24);
+  bottom: var(--spacing-41);
+  right: var(--spacing-24);
+  z-index: 1;
+}
+
+.pin__caption .label {
+  display: block;
+  margin: 0 0 var(--spacing-14);
+  color: var(--color-warm-cream);
+}
+
+.pin__caption .heading { max-width: 13em; }
+
+/* caption hidden until its scrub moment */
+html.js:not(.reduced) .pin__caption {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s var(--ease-out-expo),
+    transform 0.9s var(--ease-out-expo);
+}
+
+html.js:not(.reduced) .pin__caption.is-on {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Hero ---------- */
+.hero { background: var(--color-walnut-shadow); }
 
 .hero__film {
   position: absolute;
@@ -179,7 +229,6 @@ a { color: var(--color-warm-cream); }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  will-change: transform;
 }
 
 /* warm canvas wash for legibility — never a shadow */
@@ -198,7 +247,6 @@ a { color: var(--color-warm-cream); }
 
 .hero > :not(.hero__film) { position: relative; z-index: 1; }
 
-/* Text lives in the empty upper two-thirds of the frame */
 .hero__lockup {
   position: absolute;
   top: clamp(96px, 16vh, 170px);
@@ -259,18 +307,46 @@ a { color: var(--color-warm-cream); }
 
 /* ---------- Statement ---------- */
 .statement {
-  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
-  max-width: 1200px;
+  padding: clamp(96px, 12vw, 180px) var(--spacing-24);
 }
 
 .statement__kicker { margin: 0 0 var(--spacing-31); }
 
-.statement__heading { max-width: 14em; }
+.statement__heading { max-width: 12em; }
 
-.statement__body {
-  max-width: 26em;
+.statement__cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-41) var(--spacing-68);
   margin-top: var(--spacing-68);
-  margin-left: auto;
+  max-width: 1200px;
+}
+
+.statement__cols .voice { max-width: 24em; }
+
+.statement__second { margin-top: var(--spacing-68); }
+
+.statement__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--spacing-24) var(--element-gap);
+  margin-top: clamp(64px, 8vw, 120px);
+}
+
+.stat__rule { margin-bottom: var(--spacing-24); }
+
+.stat__value {
+  display: block;
+  font-size: clamp(41px, 5vw, 68px);
+  line-height: 0.9;
+  font-weight: var(--font-weight-medium);
+}
+
+.stat__label {
+  display: block;
+  margin-top: var(--spacing-12);
+  font-size: 12px;
+  color: var(--color-driftwood);
 }
 
 /* ---------- Marquee ---------- */
@@ -296,22 +372,18 @@ html.js:not(.reduced) .marquee__track {
   to   { transform: translateX(-50%); }
 }
 
-/* ---------- Services — pinned spinning gear ---------- */
-.gear-track { height: 340vh; }
-
+/* ---------- Gear tunnel ---------- */
 .gear-stage {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  overflow: hidden;
   display: grid;
   place-items: center;
+  background: var(--color-walnut-shadow);
 }
 
 .gear-stage__gear {
   grid-area: 1 / 1;
-  width: min(72vh, 88vw);
-  height: auto;
+  width: min(100vh, 100vw);
+  height: min(100vh, 100vw);
+  object-fit: cover;
   will-change: transform;
 }
 
@@ -322,11 +394,12 @@ html.js:not(.reduced) .marquee__track {
   text-align: center;
   z-index: 1;
   pointer-events: none;
+  width: 100%;
 }
 
 .gear-beat {
   grid-area: 1 / 1;
-  max-width: min(46vh, 78vw);
+  max-width: min(52vh, 82vw);
   opacity: 0;
   will-change: transform, opacity;
 }
@@ -339,7 +412,7 @@ html.js:not(.reduced) .marquee__track {
 }
 
 .gear-beat__name {
-  font-size: clamp(20px, 3.4vh, 31px);
+  font-size: clamp(20px, 3.6vh, 34px);
   line-height: 1.05;
   font-weight: var(--font-weight-medium);
   margin: 0;
@@ -365,40 +438,58 @@ html.js:not(.reduced) .marquee__track {
   padding: var(--spacing-68) var(--spacing-24);
 }
 
-/* ---------- Film bands (paint / ignition / facility) ---------- */
-.band {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
-}
+/* ---------- Taillight streaks ---------- */
+.streaks { background: var(--color-walnut-shadow); }
 
-.band__film {
+.streaks__img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  will-change: clip-path;
 }
 
-.band__caption {
+.streaks__rows {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 10svh var(--spacing-24);
+}
+
+.streak-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-18);
+  will-change: transform, opacity;
+}
+
+.streak-row__index {
+  font-size: 12px;
+  color: var(--color-driftwood);
+}
+
+.streak-row__name {
+  font-size: clamp(24px, 3vw, var(--text-heading));
+  line-height: var(--leading-heading);
+  font-weight: var(--font-weight-medium);
+}
+
+.streaks__kicker {
   position: absolute;
   left: var(--spacing-24);
-  bottom: var(--spacing-41);
-  right: var(--spacing-24);
+  bottom: var(--spacing-24);
   z-index: 1;
-}
-
-.band__caption .label {
-  display: block;
-  margin: 0 0 var(--spacing-14);
   color: var(--color-warm-cream);
+  margin: 0;
 }
-
-.band__caption .heading { max-width: 13em; }
 
 /* ---------- Reviews ---------- */
 .reviews {
-  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
+  padding: clamp(96px, 12vw, 180px) var(--spacing-24);
 }
 
 .reviews__heading { margin: var(--spacing-31) 0 var(--spacing-68); }
@@ -431,7 +522,7 @@ html.js:not(.reduced) .marquee__track {
 
 /* ---------- Visit ---------- */
 .visit {
-  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
+  padding: clamp(96px, 12vw, 180px) var(--spacing-24);
 }
 
 .visit__grid {
@@ -470,7 +561,7 @@ html.js:not(.reduced) .marquee__track {
 
 /* ---------- Book ---------- */
 .book {
-  padding: clamp(96px, 14vw, var(--spacing-204)) var(--spacing-24);
+  padding: clamp(96px, 12vw, 180px) var(--spacing-24);
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: var(--spacing-68) var(--spacing-68);
@@ -624,6 +715,15 @@ html.js:not(.reduced) .word > span {
 
 html.js:not(.reduced) .is-in .word > span { transform: translateY(0); }
 
+/* soft word reveal for body copy — fades rather than masks */
+html.js:not(.reduced) [data-split-soft] .softword {
+  opacity: 0.08;
+  transition: opacity 0.7s var(--ease-out-expo);
+  transition-delay: var(--word-delay, 0s);
+}
+
+html.js:not(.reduced) [data-split-soft].is-in .softword { opacity: 1; }
+
 html.js:not(.reduced) [data-reveal] {
   opacity: 0;
   transform: translateY(32px);
@@ -645,17 +745,25 @@ html.js:not(.reduced) [data-draw] {
 
 html.js:not(.reduced) [data-draw].is-in { transform: scaleX(1); }
 
+/* streak rows hidden until their scrub moment */
+html.js:not(.reduced) .streak-row {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .marquee__track { animation: none; }
   .hero__cue { display: none; }
-  .gear-track { height: auto; }
-  .gear-stage { position: relative; height: auto; padding: var(--spacing-68) var(--spacing-24); }
+  .pin { height: auto !important; }
+  .pin__stage { position: relative; height: 100svh; }
   .gear-stage__gear { display: none; }
-  .gear-stage__beats { position: relative; display: block; }
-  .gear-beat { opacity: 1; position: relative; margin-bottom: var(--spacing-41); max-width: none; }
+  .gear-stage { place-items: center; }
+  .gear-beat { opacity: 1; position: relative; grid-area: auto; margin: var(--spacing-24) 0; }
+  .gear-stage__beats { position: relative; display: block; padding: var(--spacing-68) var(--spacing-24); }
   .gear-stage__hint { display: none; }
+  .streak-row { opacity: 1 !important; transform: none !important; }
 }
 
 /* ---------- Responsive ---------- */
@@ -664,6 +772,12 @@ html.js:not(.reduced) [data-draw].is-in { transform: scaleX(1); }
 
   .hero__actions { flex-wrap: wrap; gap: var(--spacing-18); }
 
+  .statement__cols { grid-template-columns: 1fr; }
+
+  .statement__second { margin-top: 0; }
+
+  .statement__stats { grid-template-columns: 1fr; }
+
   .visit__grid { grid-template-columns: 1fr; }
 
   .book { grid-template-columns: 1fr; }
@@ -671,10 +785,6 @@ html.js:not(.reduced) [data-draw].is-in { transform: scaleX(1); }
   .book__form { grid-template-columns: 1fr; }
 
   .book__done { grid-column: 1; }
-
-  .band { height: 72vh; }
-
-  .band--ignite { height: 100vh; }
 
   .nav__items { gap: var(--spacing-14); }
 

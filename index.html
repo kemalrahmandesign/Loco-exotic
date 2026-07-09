@@ -25,45 +25,67 @@
     </div>
   </nav>
 
-  <!-- HERO — ambient living-wallpaper film -->
-  <header class="hero" id="top">
-    <video
-      class="hero__film"
-      data-loop-film
-      data-hero-film
-      muted
-      loop
-      playsinline
-      webkit-playsinline
-      preload="auto"
-      disablepictureinpicture
-      poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_162135_3835dc5c-33ed-4927-9e2a-0a9af2d2fea1.png"
-      aria-hidden="true"
-      tabindex="-1"
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_163118_919bd629-72e1-4776-9279-3138c389bc58.mp4" type="video/mp4">
-    </video>
+  <!-- HERO — camera pan scrubbed by scroll -->
+  <header class="pin pin--hero" id="top" data-pin data-pin-name="hero">
+    <div class="pin__stage hero">
+      <video
+        class="hero__film"
+        data-scrub
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        disablepictureinpicture
+        poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_162135_3835dc5c-33ed-4927-9e2a-0a9af2d2fea1.png"
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190806_ec15d88b-9497-4c4f-8bb4-02404555195c.mp4" type="video/mp4">
+      </video>
 
-    <div class="hero__lockup" data-hero-lockup>
-      <p class="hero__tagline" data-intro-fade>Loudoun County Exotics · Sterling, Virginia</p>
-      <h1 class="display" data-intro-words>Loco Exotics</h1>
-      <p class="hero__sub" data-intro-fade>German &amp; Italian luxury car repair</p>
-      <div class="hero__actions" data-intro-fade>
-        <a class="btn-pill" href="#book">Book an appointment</a>
-        <a class="link-underline" href="tel:+17036652490">Call 703.665.2490</a>
+      <div class="hero__lockup" data-hero-lockup>
+        <p class="hero__tagline" data-intro-fade>Loudoun County Exotics · Sterling, Virginia</p>
+        <h1 class="display" data-intro-words>Loco Exotics</h1>
+        <p class="hero__sub" data-intro-fade>German &amp; Italian luxury car repair</p>
+        <div class="hero__actions" data-intro-fade>
+          <a class="btn-pill" href="#book">Book an appointment</a>
+          <a class="link-underline" href="tel:+17036652490">Call 703.665.2490</a>
+        </div>
       </div>
+
+      <p class="hero__serial" data-intro-fade aria-hidden="true">Loudoun County Exotics — Sterling VA</p>
+
+      <div class="hero__cue" data-intro-fade data-hero-cue aria-hidden="true"><span>Scroll</span></div>
     </div>
-
-    <p class="hero__serial" data-intro-fade aria-hidden="true">Loudoun County Exotics — Sterling VA</p>
-
-    <div class="hero__cue" data-intro-fade aria-hidden="true"><span>Scroll</span></div>
   </header>
 
   <!-- STATEMENT -->
   <section class="statement">
-    <p class="label statement__kicker" data-reveal>The atelier</p>
-    <h2 class="heading statement__heading" data-split>Not a body shop. An atelier.</h2>
-    <p class="voice statement__body" data-reveal data-reveal-delay="120">Loudoun County Exotics is a luxury car repair shop in Sterling, Virginia, specializing in German and Italian machines. Factory-level diagnostics, honest counsel, and every job signed off by the technician who did the work.</p>
+    <p class="label statement__kicker" data-reveal>The atelier · Sterling, Virginia</p>
+    <h2 class="heading statement__heading" data-split>Not a body shop.<br>An atelier.</h2>
+
+    <div class="statement__cols">
+      <p class="voice" data-split-soft>Loudoun County Exotics is a luxury car repair shop specializing in German and Italian machines — the cars that punish shortcuts and reward obsession.</p>
+      <p class="voice statement__second" data-split-soft>Factory-level diagnostics, honest counsel, and every job signed off by the technician who did the work. That's the whole pitch.</p>
+    </div>
+
+    <div class="statement__stats">
+      <div class="stat" data-reveal>
+        <hr class="divider stat__rule" data-draw>
+        <span class="stat__value">09+</span>
+        <span class="stat__label">Marques serviced</span>
+      </div>
+      <div class="stat" data-reveal data-reveal-delay="80">
+        <hr class="divider stat__rule" data-draw>
+        <span class="stat__value">M–F</span>
+        <span class="stat__label">8 a.m. – 5 p.m. · Sterling VA</span>
+      </div>
+      <div class="stat" data-reveal data-reveal-delay="160">
+        <hr class="divider stat__rule" data-draw>
+        <span class="stat__value">4</span>
+        <span class="stat__label">States served — VA · DC · MD · WV</span>
+      </div>
+    </div>
   </section>
 
   <!-- MARQUES MARQUEE -->
@@ -76,13 +98,13 @@
     <hr class="divider" data-draw>
   </div>
 
-  <!-- SERVICES — pinned gear: spins and zooms into its dark center -->
-  <section class="gear-track" id="services" data-gear-track aria-label="Services">
-    <div class="gear-stage">
+  <!-- SERVICES — gear tunnel: approach, enter, pass through -->
+  <section class="pin pin--gear" id="services" data-pin data-pin-name="gear">
+    <div class="pin__stage gear-stage">
       <img
         class="gear-stage__gear"
         data-gear
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_155602_9a3dfc85-7c40-44fd-a8e5-b62260832914.png"
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190740_125e0cbb-86f5-4987-bc76-9f138ed36d77.png"
         alt=""
         aria-hidden="true"
       >
@@ -112,51 +134,61 @@
     </div>
   </section>
 
+  <!-- TUNNEL EXIT — out through the Huracán headlight, scrubbed -->
+  <section class="pin pin--exit" data-pin data-pin-name="exit" aria-label="The handback">
+    <div class="pin__stage">
+      <video
+        class="pin__film"
+        data-scrub
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        disablepictureinpicture
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190813_3763bb5b-f73c-4c5f-af50-49c4441e3d07.mp4" type="video/mp4">
+      </video>
+      <div class="pin__caption" data-pin-caption>
+        <p class="label">The handback</p>
+        <h2 class="heading">Handed back better than delivery day.</h2>
+      </div>
+    </div>
+  </section>
+
   <div class="services-cta">
     <a class="btn-ghost" href="#book" data-reveal>Book an appointment</a>
   </div>
 
-  <!-- PAINT — scroll-scrubbed light sweep -->
-  <section class="band band--scrub" aria-label="Paint and finish work">
-    <video
-      class="band__film"
-      data-scrub-film
-      muted
-      playsinline
-      webkit-playsinline
-      preload="auto"
-      disablepictureinpicture
-      poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_154342_a5368528-450d-4d8b-85b8-44b1b344f71f.png"
-      aria-hidden="true"
-      tabindex="-1"
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_163133_7f969f4b-dc20-47b5-9c73-7a439c7cd790.mp4" type="video/mp4">
-    </video>
-    <div class="band__caption">
-      <p class="label" data-reveal>Bodywork · Paint · Detail</p>
-      <h2 class="heading" data-split>Measured in microns. Finished by hand.</h2>
-    </div>
-  </section>
-
-  <!-- IGNITION — plays once as it enters -->
-  <section class="band band--ignite" aria-label="The handback">
-    <video
-      class="band__film"
-      data-ignite-film
-      muted
-      playsinline
-      webkit-playsinline
-      preload="metadata"
-      disablepictureinpicture
-      poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_155544_658167d0-3819-4391-a66d-8795c1a9087e.png"
-      aria-hidden="true"
-      tabindex="-1"
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_163121_e74a8f93-3ea8-41b1-a5cf-c2d7ef06a5ae.mp4" type="video/mp4">
-    </video>
-    <div class="band__caption">
-      <p class="label" data-reveal>The handback</p>
-      <h2 class="heading" data-split>Handed back better than delivery day.</h2>
+  <!-- TAILLIGHT — streaks reveal top to bottom, one line of text each -->
+  <section class="pin pin--streaks" data-pin data-pin-name="streaks" aria-label="Bodywork, paint and detail">
+    <div class="pin__stage streaks">
+      <img
+        class="streaks__img"
+        data-streaks-img
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190747_ec30055d-d33f-43d6-b0e0-267ee5b62f8f.png"
+        alt="LED taillight light trails streaking across darkness"
+      >
+      <div class="streaks__rows">
+        <div class="streak-row" data-streak-row>
+          <span class="streak-row__index">01</span>
+          <span class="streak-row__name">Paint correction</span>
+        </div>
+        <div class="streak-row" data-streak-row>
+          <span class="streak-row__index">02</span>
+          <span class="streak-row__name">Paint protection film</span>
+        </div>
+        <div class="streak-row" data-streak-row>
+          <span class="streak-row__index">03</span>
+          <span class="streak-row__name">Ceramic coating</span>
+        </div>
+        <div class="streak-row" data-streak-row>
+          <span class="streak-row__index">04</span>
+          <span class="streak-row__name">Wheel &amp; trim refinishing</span>
+        </div>
+      </div>
+      <p class="streaks__kicker label" data-reveal>Bodywork · Paint · Detail</p>
     </div>
   </section>
 
@@ -194,26 +226,28 @@
     </article>
   </section>
 
-  <!-- FACILITY — slow pan film -->
-  <section class="band" aria-label="The facility">
-    <video
-      class="band__film"
-      data-loop-film
-      muted
-      loop
-      playsinline
-      webkit-playsinline
-      preload="metadata"
-      disablepictureinpicture
-      poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_155558_92ae0544-27dd-4d2a-86c8-138b370a1fb8.png"
-      aria-hidden="true"
-      tabindex="-1"
-    >
-      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_163148_be247be1-d7e8-456c-82a1-911e32aad8ed.mp4" type="video/mp4">
-    </video>
-    <div class="band__caption">
-      <p class="label" data-reveal>The facility</p>
-      <h2 class="heading" data-split>Built like a laboratory.</h2>
+  <!-- THE LIFT — car rises as you scroll -->
+  <section class="pin pin--lift" data-pin data-pin-name="lift" aria-label="On the lift">
+    <div class="pin__stage">
+      <video
+        class="pin__film"
+        data-scrub
+        data-scrub-reverse
+        muted
+        playsinline
+        webkit-playsinline
+        preload="auto"
+        disablepictureinpicture
+        poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_155558_92ae0544-27dd-4d2a-86c8-138b370a1fb8.png"
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190828_53313e2c-97e1-4624-8f6e-afbc920ac61d.mp4" type="video/mp4">
+      </video>
+      <div class="pin__caption" data-pin-caption>
+        <p class="label">On the lift</p>
+        <h2 class="heading">Every job starts underneath.</h2>
+      </div>
     </div>
   </section>
 
