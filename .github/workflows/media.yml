@@ -1,0 +1,43 @@
+name: Prepare media
+
+# Re-encodes the Higgsfield-generated films with a keyframe every 4
+# frames so scroll-scrubbing (currentTime seeks) is cheap, and commits
+# them to media/ so they're served same-origin from Pages.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  encode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Download and re-encode
+        run: |
+          set -euo pipefail
+          mkdir -p media
+          while read -r name url; do
+            [ -z "${name:-}" ] && continue
+            echo "== $name"
+            curl -fsSL "$url" -o "/tmp/$name.src.mp4"
+            ffmpeg -y -i "/tmp/$name.src.mp4" -an \
+              -c:v libx264 -preset slow -crf 21 -g 4 \
+              -pix_fmt yuv420p -movflags +faststart \
+              "media/$name.mp4"
+          done < media/manifest.txt
+          ls -la media
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add media
+          git commit -m "Re-encode scrub films with dense keyframes" || echo "nothing to commit"
+          git push
