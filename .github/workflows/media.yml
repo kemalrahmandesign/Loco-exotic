@@ -27,7 +27,7 @@ jobs:
             [ -z "${name:-}" ] && continue
             echo "== $name"
             curl -fsSL "$url" -o "/tmp/$name.src.mp4"
-            ffmpeg -y -i "/tmp/$name.src.mp4" -an \
+            ffmpeg -nostdin -y -i "/tmp/$name.src.mp4" -an \
               -c:v libx264 -preset slow -crf 21 -g 4 \
               -pix_fmt yuv420p -movflags +faststart \
               "media/$name.mp4"
