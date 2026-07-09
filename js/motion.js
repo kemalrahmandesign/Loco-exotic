@@ -101,8 +101,6 @@
   var gearEl = document.querySelector('[data-gear]');
   var gearBeats = document.querySelectorAll('[data-gear-beat]');
   var gearHint = document.querySelector('.gear-stage__hint');
-  var streaksBase = document.querySelector('[data-streaks-base]');
-  var streakBands = document.querySelectorAll('[data-streak-band]');
   var streakRows = document.querySelectorAll('[data-streak-row]');
 
   var handlers = {
@@ -135,30 +133,23 @@
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
     },
 
-    exit: function (pin, p) {
-      // Shoot out of the headlight: the film starts as near-black
-      // (matching the gear bore), rolls level as it pulls out to
-      // the full car, lights igniting at the end.
+    brake: function (pin, p) {
+      // Out of the brake disc hub: the film starts near-black
+      // (matching the gear's dark center), pulls back to the
+      // spinning cross-drilled disc and red caliper, and the
+      // rotor glows hot through the back half of the scrub.
       scrubVideo(pin, p);
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.8);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.45);
     },
 
     streaks: function (pin, p) {
-      // A real taillight first; then its light stretches into
-      // horizontal trails, one band at a time, top to bottom,
-      // each band carrying its own line of text.
-      if (streaksBase) {
-        streaksBase.style.opacity = String(1 - fade(p, 0.3, 0.75) * 0.82);
-      }
-      var n = streakBands.length;
-      streakBands.forEach(function (band, i) {
-        var at = 0.14 + i * 0.17;
-        var vis = fade(p, at, at + 0.11);
-        band.style.clipPath = 'inset(0 ' + ((1 - vis) * 100) + '% 0 0)';
-      });
+      // The taillight film: camera pushes in and the light
+      // stretches into horizontal trails; the service lines
+      // land one by one as the streaks form.
+      scrubVideo(pin, p);
       streakRows.forEach(function (row, i) {
-        var at = 0.17 + i * 0.17;
-        var vis = fade(p, at, at + 0.1);
+        var at = 0.5 + i * 0.11;
+        var vis = fade(p, at, at + 0.09);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
