@@ -25,9 +25,10 @@
   --text-display: 51px;
   --leading-display: 0.9;
 
-  /* Typography — Weights */
+  /* Typography — Weights (bolder pass) */
   --font-weight-regular: 400;
-  --font-weight-medium: 500;
+  --font-weight-medium: 600;
+  --font-weight-bold: 800;
 
   /* Spacing */
   --spacing-6: 6px;
