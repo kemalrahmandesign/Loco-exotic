@@ -173,7 +173,7 @@ a { color: var(--color-warm-cream); }
 .pin--gear    { height: 300vh; }
 .pin--brake   { height: 280vh; }
 .pin--streaks { height: 280vh; }
-.pin--lift    { height: 240vh; }
+.pin--lift    { height: 420vh; }
 
 .pin__stage {
   position: sticky;
@@ -207,6 +207,11 @@ a { color: var(--color-warm-cream); }
 
 .pin__caption .heading { max-width: 13em; }
 
+.pin__caption--top {
+  bottom: auto;
+  top: clamp(84px, 14vh, 150px);
+}
+
 /* caption hidden until its scrub moment */
 html.js:not(.reduced) .pin__caption {
   opacity: 0;
@@ -219,6 +224,73 @@ html.js:not(.reduced) .pin__caption {
 html.js:not(.reduced) .pin__caption.is-on {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ---------- Reviews over the lift film — hazy glass cards ---------- */
+.lift-reviews {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.review-card {
+  position: absolute;
+  width: min(420px, 78vw);
+  padding: var(--card-padding);
+  border-radius: var(--radius-cards);
+  border: 1px solid rgba(255, 237, 215, 0.14);
+  background: rgba(16, 9, 4, 0.34);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+}
+
+/* staggered placements so cards don't stack in one spot */
+.review-card--1 { top: 30%; left: 6vw; }
+.review-card--2 { top: 24%; right: 6vw; }
+.review-card--3 { top: 54%; left: 12vw; }
+.review-card--4 { top: 50%; right: 8vw; }
+
+.review-card__stars {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 5px;
+  margin-bottom: var(--spacing-14);
+}
+
+.review-card__quote {
+  text-transform: none;
+  font-weight: var(--font-weight-regular);
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.3;
+  margin: 0 0 var(--spacing-14);
+}
+
+.review-card__meta {
+  font-size: 11px;
+  color: var(--color-driftwood);
+  margin: 0;
+}
+
+html.js:not(.reduced) .review-card {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+}
+
+html.js:not(.reduced) .review-card.is-on {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+@media (max-width: 900px) {
+  .review-card { width: 86vw; left: 7vw !important; right: auto !important; }
+  .review-card--1 { top: 20%; }
+  .review-card--2 { top: 38%; }
+  .review-card--3 { top: 56%; }
+  .review-card--4 { top: 74%; }
 }
 
 /* ---------- Hero ---------- */
@@ -422,14 +494,32 @@ html.js:not(.reduced) .marquee__track {
   display: grid;
   place-items: center;
   background: var(--color-walnut-shadow);
+  overflow: hidden;
 }
 
 /* transparent cutout — no canvas edge, safe to rotate and scale */
 .gear-stage__gear {
   grid-area: 1 / 1;
-  width: min(78vh, 88vw);
+  z-index: 1;
+  width: min(64vh, 82vw);
   height: auto;
   will-change: transform;
+}
+
+/* Solid dark disc that fills the gear's transparent bore and grows
+   to swallow the viewport — it, not the photo, carries the zoom, so
+   there are no pixels to blow up. Colored to the brake entrance. */
+.gear-stage__hole {
+  grid-area: 1 / 1;
+  z-index: 2;
+  width: min(64vh, 82vw);
+  aspect-ratio: 1;
+  border-radius: var(--radius-full-round);
+  background: radial-gradient(circle,
+    #060302 0%, #060302 46%, rgba(6, 3, 2, 0) 62%);
+  transform: scale(0.34);
+  will-change: transform;
+  pointer-events: none;
 }
 
 .gear-stage__beats {
@@ -437,7 +527,7 @@ html.js:not(.reduced) .marquee__track {
   display: grid;
   place-items: center;
   text-align: center;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
   width: 100%;
 }
@@ -799,8 +889,10 @@ html.js:not(.reduced) .streak-row {
   .gear-beat { opacity: 1; position: relative; grid-area: auto; margin: var(--spacing-24) 0; }
   .gear-stage__beats { position: relative; display: block; padding: var(--spacing-68) var(--spacing-24); }
   .gear-stage__hint { display: none; }
+  .gear-stage__hole { display: none; }
   .streak-row { opacity: 1 !important; transform: none !important; }
-  .streak-band { clip-path: none !important; }
+  .review-card { opacity: 1 !important; transform: none !important; position: relative; inset: auto; margin: var(--spacing-18) auto; }
+  .lift-reviews { position: relative; display: flex; flex-direction: column; padding: var(--spacing-68) var(--spacing-24); }
 }
 
 /* ---------- Responsive ---------- */
