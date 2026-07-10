@@ -155,6 +155,7 @@ a { color: var(--color-warm-cream); }
   letter-spacing: 0.02em;
   text-decoration: none;
   padding-bottom: var(--spacing-6);
+  perspective: 320px;
 }
 
 .nav__item::after {
@@ -172,30 +173,29 @@ a { color: var(--color-warm-cream); }
 .nav__item:hover::after,
 .nav__item.is-active::after { transform: scaleX(1); }
 
-/* wavy letter flip on hover — each letter rides up and back down
-   with a stagger, like a ticker */
+/* stock-ticker flip on hover — each letter flips vertically in
+   place with a stagger and leans slightly italic mid-flip */
 .nav__item .nav__ch {
   display: inline-block;
-  transition: transform 0.34s var(--ease-out-expo);
-  transition-delay: calc(var(--ch) * 28ms);
+  backface-visibility: hidden;
 }
 
 .nav__item:hover .nav__ch {
-  animation: nav-wave 0.5s var(--ease-out-expo);
-  animation-delay: calc(var(--ch) * 28ms);
+  animation: nav-flip 0.52s var(--ease-out-expo) both;
+  animation-delay: calc(var(--ch) * 40ms);
 }
 
-@keyframes nav-wave {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-80%); }
-  100% { transform: translateY(0); }
+@keyframes nav-flip {
+  0%   { transform: rotateX(0deg) skewX(0deg); }
+  50%  { transform: rotateX(-180deg) skewX(-11deg); }
+  100% { transform: rotateX(-360deg) skewX(0deg); }
 }
 
 /* ---------- Pinned scrub sections ---------- */
 .pin { position: relative; }
 
 .pin--hero    { height: 260vh; }
-.pin--gear    { height: 210vh; }
+.pin--gear    { height: 150vh; }
 .pin--brake   { height: 280vh; }
 .pin--streaks { height: 280vh; }
 .pin--lift    { height: 420vh; }
@@ -382,11 +382,12 @@ html.js:not(.reduced) .review-card.is-on {
   margin: 0;
 }
 
-/* Scroll cue — bottom-right: dashed ring + chevron + label */
+/* Scroll cue — bottom center: dashed dot ring + chevron + label */
 .hero__cue {
   position: absolute;
-  right: var(--spacing-24);
+  left: 50%;
   bottom: var(--spacing-24);
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: var(--spacing-14);
@@ -394,15 +395,11 @@ html.js:not(.reduced) .review-card.is-on {
 
 .hero__cue-badge {
   position: relative;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
   color: var(--color-warm-cream);
-}
-
-html.js:not(.reduced) .hero__cue-badge {
-  animation: cue-bounce 2.2s ease-in-out infinite;
 }
 
 .hero__cue-ring {
@@ -418,11 +415,11 @@ html.js:not(.reduced) .hero__cue-ring {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 2px;
-  height: 2px;
+  width: 1.6px;
+  height: 1.6px;
   border-radius: var(--radius-full-round);
   background: var(--color-warm-cream);
-  transform: translate(-50%, -50%) rotate(var(--dot-angle)) translateY(-20px);
+  transform: translate(-50%, -50%) rotate(var(--dot-angle)) translateY(-22px);
 }
 
 .hero__cue-chevron {
@@ -438,11 +435,6 @@ html.js:not(.reduced) .hero__cue-chevron {
   font-size: 11px;
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.04em;
-}
-
-@keyframes cue-bounce {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
 }
 
 @keyframes cue-nudge {
@@ -983,7 +975,7 @@ html.js:not(.reduced) .streak-row {
 
   .statement__second { margin-top: 0; }
 
-  .statement__stats { grid-template-columns: 1fr; }
+  .statement__stats { grid-template-columns: 1fr; gap: var(--spacing-41); }
 
   .visit__grid { grid-template-columns: 1fr; }
 
@@ -996,4 +988,54 @@ html.js:not(.reduced) .streak-row {
   .nav__items { gap: var(--spacing-14); }
 
   .book-pill { display: inline-block; }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 640px) {
+  /* nav has to shrink so four bold items + wordmark fit one row */
+  .nav { padding: var(--spacing-14) var(--spacing-14); align-items: center; }
+  .nav__wordmark { font-size: 12px; }
+  .nav__items { gap: 10px; }
+  .nav__item { font-size: 10px; letter-spacing: 0.01em; padding-bottom: 3px; }
+
+  /* hero name must fit the viewport, not overflow it */
+  .display { font-size: clamp(44px, 15.5vw, 76px); line-height: 0.9; }
+  .hero__lockup { top: clamp(76px, 13vh, 120px); }
+  .hero__tagline { font-size: 11px; }
+  .hero__sub { font-size: 15px; margin-top: var(--spacing-14); }
+  .hero__actions { margin-top: var(--spacing-24); }
+  .hero__actions .btn-pill { font-size: 13px; padding: var(--spacing-12) var(--spacing-18); }
+
+  .hero__cue-text { display: none; }
+  .hero__cue { bottom: var(--spacing-18); }
+
+  /* statement: tighten scale so nothing clips */
+  .statement { padding: clamp(80px, 20vw, 120px) var(--spacing-24); }
+  .statement__heading { font-size: clamp(34px, 11vw, 52px); max-width: 12em; }
+  .statement__cols .voice:first-child { font-size: clamp(19px, 5.4vw, 24px); }
+  .stat__value { font-size: clamp(48px, 15vw, 72px); }
+  .stat__label { font-size: 12px; }
+
+  /* section captions and headings sit clear of the nav */
+  .pin__caption { left: var(--spacing-18); right: var(--spacing-18); bottom: var(--spacing-31); }
+  .pin__caption--top { top: clamp(72px, 12vh, 110px); }
+  .heading { font-size: clamp(28px, 8vw, 40px); }
+
+  /* gear tunnel text scaled for small screens */
+  .gear-beat__name { font-size: clamp(22px, 6.5vw, 30px); }
+
+  /* streak service rows fit width */
+  .streak-row__name { font-size: clamp(22px, 7vw, 32px); }
+  .streaks__rows { padding: 12svh var(--spacing-18); }
+
+  /* reviews: full-width stacked cards, generous vertical rhythm */
+  .lift-reviews { padding: 14svh var(--spacing-18) 12svh; }
+  .review-card { width: auto; left: var(--spacing-18) !important; right: var(--spacing-18) !important; }
+  .review-card--1 { top: 16%; }
+  .review-card--2 { top: 36%; }
+  .review-card--3 { top: 56%; }
+  .review-card--4 { top: 76%; }
+
+  .visit__phone { font-size: clamp(28px, 9vw, 40px); }
+  .footer__row { flex-direction: column; gap: var(--spacing-18); }
 }
