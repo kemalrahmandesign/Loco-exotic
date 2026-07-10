@@ -7,7 +7,7 @@
   <meta name="description" content="Loudoun County Exotics, LLC — luxury and exotic car repair in Sterling, Virginia. BMW, Ferrari, Lamborghini, Maserati, Alfa Romeo, Mercedes-Benz, Porsche, Bentley, Aston Martin and every luxury marque. Serving VA, DC, MD & WV. Call 703.665.2490.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/site.css">
   <script>document.documentElement.classList.add('js');</script>
@@ -56,8 +56,11 @@
       <p class="hero__serial" data-intro-fade aria-hidden="true">Loudoun County Exotics — Sterling VA</p>
 
       <div class="hero__cue" data-intro-fade data-hero-cue aria-hidden="true">
-        <span class="hero__cue-ring" data-cue-ring></span>
-        <span class="hero__cue-text">Scroll</span>
+        <span class="hero__cue-badge">
+          <span class="hero__cue-ring" data-cue-ring></span>
+          <svg class="hero__cue-chevron" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+        </span>
+        <span class="hero__cue-text">Scroll to continue</span>
       </div>
     </div>
   </header>
@@ -75,17 +78,17 @@
     <div class="statement__stats">
       <div class="stat" data-reveal>
         <hr class="divider stat__rule" data-draw>
-        <span class="stat__value">09+</span>
+        <span class="stat__value"><span data-countup data-to="9" data-pad="2">00</span><span class="stat__suffix">+</span></span>
         <span class="stat__label">Marques serviced — and counting</span>
       </div>
       <div class="stat" data-reveal data-reveal-delay="80">
         <hr class="divider stat__rule" data-draw>
-        <span class="stat__value">M–F</span>
-        <span class="stat__label">8 a.m. – 5 p.m. · Sterling VA</span>
+        <span class="stat__value"><span data-countup data-to="5">0</span></span>
+        <span class="stat__label">Days a week — Mon–Fri, 8 to 5</span>
       </div>
       <div class="stat" data-reveal data-reveal-delay="160">
         <hr class="divider stat__rule" data-draw>
-        <span class="stat__value">4</span>
+        <span class="stat__value"><span data-countup data-to="4">0</span></span>
         <span class="stat__label">States served — VA · DC · MD · WV</span>
       </div>
     </div>

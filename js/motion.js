@@ -105,15 +105,28 @@
   var heroLockup = document.querySelector('[data-hero-lockup]');
   var heroCue = document.querySelector('[data-hero-cue]');
 
-  // Scroll cue: ring of little dots around the label
+  // Scroll cue: ring of little dots around the chevron
   var cueRing = document.querySelector('[data-cue-ring]');
   if (cueRing) {
-    for (var d = 0; d < 12; d++) {
+    for (var d = 0; d < 10; d++) {
       var dot = document.createElement('i');
-      dot.style.setProperty('--dot-angle', (d * 30) + 'deg');
+      dot.style.setProperty('--dot-angle', (d * 36) + 'deg');
       cueRing.appendChild(dot);
     }
   }
+
+  // Nav items: wrap each letter so it can ride the ticker wave
+  document.querySelectorAll('.nav__item').forEach(function (item) {
+    var text = item.textContent;
+    item.textContent = '';
+    text.split('').forEach(function (ch, i) {
+      var span = document.createElement('span');
+      span.className = 'nav__ch';
+      span.style.setProperty('--ch', i);
+      span.textContent = ch === ' ' ? ' ' : ch;
+      item.appendChild(span);
+    });
+  });
   var gearEl = document.querySelector('[data-gear]');
   var gearHole = document.querySelector('[data-gear-hole]');
   var gearBeats = document.querySelectorAll('[data-gear-beat]');
@@ -143,29 +156,31 @@
       // color that can't pixelate — carrying the tunnel dive into
       // the brake film's matching black.
       if (gearEl) {
-        var gScale = 0.5 + Math.pow(fade(p, 0, 0.8), 1.3) * 1.7; // capped
+        var gScale = 0.5 + Math.pow(fade(p, 0, 0.88), 1.3) * 1.9; // capped
         gearEl.style.transform = 'rotate(' + (p * 220) + 'deg) scale(' + gScale + ')';
-        gearEl.style.opacity = String(1 - fade(p, 0.6, 0.82));
+        gearEl.style.opacity = String(1 - fade(p, 0.74, 0.9));
       }
+      // the dark bore only takes over in the final stretch, so we
+      // don't sit in black for long before the brake film
       if (gearHole) {
-        var hScale = 0.34 + Math.pow(fade(p, 0.1, 0.9), 1.5) * 7.5;
+        var hScale = 0.34 + Math.pow(fade(p, 0.55, 0.98), 1.5) * 8;
         gearHole.style.transform = 'scale(' + hScale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.08 + (i / n) * 0.62;
-        var end = 0.08 + ((i + 1) / n) * 0.62;
+        var start = 0.06 + (i / n) * 0.74;
+        var end = 0.06 + ((i + 1) / n) * 0.74;
         var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.72, 0.8));
+        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.84, 0.92));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
-      // veil finishes into HANDOFF black — the brake stage opens
-      // under the exact same color, so the seam can't show
+      // veil finishes into HANDOFF black late, so the black dwell
+      // before the brake film is short
       if (pin.fadeEl) {
         pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(fade(p, 0.7, 0.9));
+        pin.fadeEl.style.opacity = String(fade(p, 0.9, 0.99));
       }
     },
 
@@ -207,10 +222,19 @@
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
-      // settle to canvas brown so reviews continues the same shade
+      // open under a brief veil (hides the first raw/decoded frame
+      // that could flash before the scrub seeks), settle to canvas
+      // brown at the end so reviews continues the same shade
       if (pin.fadeEl) {
-        pin.fadeEl.style.background = CANVAS;
-        pin.fadeEl.style.opacity = String(fade(p, 0.9, 1));
+        var intro = 1 - fade(p, 0, 0.06);
+        var outro = fade(p, 0.9, 1);
+        if (intro >= outro) {
+          pin.fadeEl.style.background = CANVAS;
+          pin.fadeEl.style.opacity = String(intro);
+        } else {
+          pin.fadeEl.style.background = CANVAS;
+          pin.fadeEl.style.opacity = String(outro);
+        }
       }
     },
 
@@ -309,6 +333,45 @@
         el.classList.add('is-in');
       });
     });
+  }
+
+  /* ----------------------------------------------------------
+     Count-up numbers (statement stats)
+     ---------------------------------------------------------- */
+  function countUp(el) {
+    var to = parseInt(el.getAttribute('data-to'), 10) || 0;
+    var pad = parseInt(el.getAttribute('data-pad'), 10) || 0;
+    var dur = 1100;
+    var t0 = null;
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var k = clamp((ts - t0) / dur, 0, 1);
+      var eased = 1 - Math.pow(1 - k, 3);
+      var val = Math.round(eased * to);
+      el.textContent = pad ? String(val).padStart(pad, '0') : String(val);
+      if (k < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  if ('IntersectionObserver' in window) {
+    var countEls = document.querySelectorAll('[data-countup]');
+    if (reduced) {
+      countEls.forEach(function (el) {
+        var to = parseInt(el.getAttribute('data-to'), 10) || 0;
+        var pad = parseInt(el.getAttribute('data-pad'), 10) || 0;
+        el.textContent = pad ? String(to).padStart(pad, '0') : String(to);
+      });
+    } else {
+      var countIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          countUp(entry.target);
+          countIo.unobserve(entry.target);
+        });
+      }, { rootMargin: '0px 0px -20% 0px' });
+      countEls.forEach(function (el) { countIo.observe(el); });
+    }
   }
 
   /* ----------------------------------------------------------
