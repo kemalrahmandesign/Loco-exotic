@@ -115,9 +115,11 @@
     }
   }
   var gearEl = document.querySelector('[data-gear]');
+  var gearHole = document.querySelector('[data-gear-hole]');
   var gearBeats = document.querySelectorAll('[data-gear-beat]');
   var gearHint = document.querySelector('.gear-stage__hint');
   var streakRows = document.querySelectorAll('[data-streak-row]');
+  var reviewCards = document.querySelectorAll('[data-review-card]');
 
   var handlers = {
     hero: function (pin, p) {
@@ -135,29 +137,35 @@
     },
 
     gear: function (pin, p) {
-      // Tunnel approach: gear starts small, swells until its dark
-      // bore swallows the viewport, then the whole stage settles
-      // to darkness so the brake film's black opening matches
-      // exactly regardless of the gear image's end color.
+      // The gear rotates and grows only modestly (so the photo never
+      // blows up into visible pixels); the SOLID dark bore disc
+      // behind it is what scales up to swallow the viewport — a flat
+      // color that can't pixelate — carrying the tunnel dive into
+      // the brake film's matching black.
       if (gearEl) {
-        var scale = 0.42 + Math.pow(fade(p, 0, 0.92), 1.35) * 5.2;
-        gearEl.style.transform = 'rotate(' + (p * 200) + 'deg) scale(' + scale + ')';
+        var gScale = 0.5 + Math.pow(fade(p, 0, 0.8), 1.3) * 1.7; // capped
+        gearEl.style.transform = 'rotate(' + (p * 220) + 'deg) scale(' + gScale + ')';
+        gearEl.style.opacity = String(1 - fade(p, 0.6, 0.82));
+      }
+      if (gearHole) {
+        var hScale = 0.34 + Math.pow(fade(p, 0.1, 0.9), 1.5) * 7.5;
+        gearHole.style.transform = 'scale(' + hScale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.1 + (i / n) * 0.72;
-        var end = 0.1 + ((i + 1) / n) * 0.72;
+        var start = 0.08 + (i / n) * 0.62;
+        var end = 0.08 + ((i + 1) / n) * 0.62;
         var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.86, 0.92));
+        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.72, 0.8));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
-      // veil down to HANDOFF black — the brake stage opens under
-      // the exact same color, so the seam can't show
+      // veil finishes into HANDOFF black — the brake stage opens
+      // under the exact same color, so the seam can't show
       if (pin.fadeEl) {
         pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(fade(p, 0.84, 0.97));
+        pin.fadeEl.style.opacity = String(fade(p, 0.7, 0.9));
       }
     },
 
@@ -207,10 +215,15 @@
     },
 
     lift: function (pin, p) {
-      // Film was generated as the car lowering; scrubbed in
-      // reverse so the car rises as you scroll down.
+      // Lift film runs underneath while five-star reviews pop up
+      // over it one at a time as glass cards.
       scrubVideo(pin, p);
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.15);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.06 && p < 0.9);
+      var n = reviewCards.length;
+      reviewCards.forEach(function (card, i) {
+        var at = 0.14 + (i / n) * 0.66;
+        card.classList.toggle('is-on', p > at);
+      });
     }
   };
 

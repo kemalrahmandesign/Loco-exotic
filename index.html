@@ -111,6 +111,7 @@
         alt=""
         aria-hidden="true"
       >
+      <span class="gear-stage__hole" data-gear-hole aria-hidden="true"></span>
       <div class="gear-stage__beats">
         <div class="gear-beat" data-gear-beat>
           <span class="gear-beat__index">01</span>
@@ -162,10 +163,6 @@
     </div>
   </section>
 
-  <div class="services-cta">
-    <a class="btn-ghost" href="#book" data-reveal>Book an appointment</a>
-  </div>
-
   <!-- TAILLIGHT — push in, light stretches into streaks, scrubbed -->
   <section class="pin pin--streaks" data-pin data-pin-name="streaks" aria-label="Bodywork, paint and detail">
     <div class="pin__stage streaks">
@@ -206,42 +203,8 @@
     </div>
   </section>
 
-  <!-- REVIEWS -->
-  <section class="reviews" id="reviews" aria-label="Client reviews">
-    <p class="label" data-reveal>Reviews</p>
-    <h2 class="heading reviews__heading" data-split>The paddock agrees.</h2>
-
-    <article class="review" data-reveal>
-      <hr class="divider review__rule" data-draw>
-      <span class="review__stars" aria-label="5 out of 5 stars">★★★★★</span>
-      <blockquote class="review__quote">"The panel gaps are tighter than when it left Stuttgart. Obsessive in the best way."</blockquote>
-      <p class="review__meta">Marcus T. — Porsche 911 Turbo S · PPF &amp; paint correction</p>
-    </article>
-
-    <article class="review" data-reveal data-reveal-delay="60">
-      <hr class="divider review__rule" data-draw>
-      <span class="review__stars" aria-label="5 out of 5 stars">★★★★★</span>
-      <blockquote class="review__quote">"The dealer quoted six weeks. LoCo did it in nine days and documented every torque value."</blockquote>
-      <p class="review__meta">Dana R. — Ferrari 488 GTB · Major service</p>
-    </article>
-
-    <article class="review" data-reveal data-reveal-delay="120">
-      <hr class="divider review__rule" data-draw>
-      <span class="review__stars" aria-label="5 out of 5 stars">★★★★★</span>
-      <blockquote class="review__quote">"They found what two other shops missed. My only shop from now on."</blockquote>
-      <p class="review__meta">Victor A. — Lamborghini Huracán · Clutch &amp; diagnostics</p>
-    </article>
-
-    <article class="review" data-reveal data-reveal-delay="180">
-      <hr class="divider review__rule" data-draw>
-      <span class="review__stars" aria-label="5 out of 5 stars">★★★★★</span>
-      <blockquote class="review__quote">"You cannot tell anything ever happened. Factory finish, factory feel."</blockquote>
-      <p class="review__meta">Priya S. — Mercedes-AMG GT · Bodywork after a track day</p>
-    </article>
-  </section>
-
-  <!-- THE LIFT — car rises as you scroll -->
-  <section class="pin pin--lift" data-pin data-pin-name="lift" aria-label="On the lift">
+  <!-- THE LIFT — car rises while reviews pop up over the film -->
+  <section class="pin pin--lift" id="reviews" data-pin data-pin-name="lift" aria-label="Reviews">
     <div class="pin__stage">
       <video
         class="pin__film"
@@ -258,10 +221,33 @@
       >
         <source src="media/lift.mp4" type="video/mp4">
       </video>
-      <div class="pin__caption" data-pin-caption>
-        <p class="label">On the lift</p>
-        <h2 class="heading">Every job starts underneath.</h2>
+      <div class="lift-reviews" aria-label="Client reviews">
+        <div class="review-card review-card--1" data-review-card>
+          <span class="review-card__stars" aria-label="5 out of 5 stars">★★★★★</span>
+          <blockquote class="review-card__quote">"The panel gaps are tighter than when it left Stuttgart. Obsessive in the best way."</blockquote>
+          <p class="review-card__meta">Marcus T. — Porsche 911 Turbo S · PPF &amp; paint correction</p>
+        </div>
+        <div class="review-card review-card--2" data-review-card>
+          <span class="review-card__stars" aria-label="5 out of 5 stars">★★★★★</span>
+          <blockquote class="review-card__quote">"The dealer quoted six weeks. LoCo did it in nine days and documented every torque value."</blockquote>
+          <p class="review-card__meta">Dana R. — Ferrari 488 GTB · Major service</p>
+        </div>
+        <div class="review-card review-card--3" data-review-card>
+          <span class="review-card__stars" aria-label="5 out of 5 stars">★★★★★</span>
+          <blockquote class="review-card__quote">"They found what two other shops missed. My only shop from now on."</blockquote>
+          <p class="review-card__meta">Victor A. — Lamborghini Huracán · Clutch &amp; diagnostics</p>
+        </div>
+        <div class="review-card review-card--4" data-review-card>
+          <span class="review-card__stars" aria-label="5 out of 5 stars">★★★★★</span>
+          <blockquote class="review-card__quote">"You cannot tell anything ever happened. Factory finish, factory feel."</blockquote>
+          <p class="review-card__meta">Priya S. — Mercedes-AMG GT · Bodywork after a track day</p>
+        </div>
       </div>
+      <div class="pin__caption pin__caption--top" data-pin-caption>
+        <p class="label">Reviews</p>
+        <h2 class="heading">The paddock agrees.</h2>
+      </div>
+      <div class="pin__fade" data-pin-fade aria-hidden="true"></div>
     </div>
   </section>
 
