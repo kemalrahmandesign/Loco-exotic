@@ -336,13 +336,15 @@ html.js:not(.reduced) .hero__cue-ring {
   to { transform: rotate(360deg); }
 }
 
-/* Section hand-off fade — settles the frame into darkness so the
-   next film's near-black opening reads as one continuous move */
+/* Section hand-off veil — the outgoing stage fades to a color and
+   the incoming stage starts under the SAME color, so the boundary
+   is always one continuous shade no matter what the films contain.
+   JS sets the color per phase; canvas brown is the default. */
 .pin__fade {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: #080402;
+  background: var(--color-walnut-shadow);
   opacity: 0;
   pointer-events: none;
   will-change: opacity;

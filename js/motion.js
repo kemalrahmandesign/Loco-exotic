@@ -13,6 +13,11 @@
   var clamp = function (v, lo, hi) { return Math.min(hi, Math.max(lo, v)); };
   var fade = function (p, a, b) { return clamp((p - a) / (b - a), 0, 1); };
 
+  // Hand-off shades: HANDOFF for film-to-film boundaries (both sides
+  // show this exact color at the seam), CANVAS for film-to-section.
+  var HANDOFF = '#060302';
+  var CANVAS = '#100904';
+
   /* ----------------------------------------------------------
      Momentum smooth scroll — wheel input eased toward a target
      so native layout (sticky stages, fixed nav, anchors) keeps
@@ -148,18 +153,34 @@
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
-      if (pin.fadeEl) pin.fadeEl.style.opacity = String(fade(p, 0.84, 0.97));
+      // veil down to HANDOFF black — the brake stage opens under
+      // the exact same color, so the seam can't show
+      if (pin.fadeEl) {
+        pin.fadeEl.style.background = HANDOFF;
+        pin.fadeEl.style.opacity = String(fade(p, 0.84, 0.97));
+      }
     },
 
     brake: function (pin, p) {
-      // Out of the brake disc hub: black opening matches the gear
-      // fade-out; a slight zoom at the end pushes us onward.
+      // Opens under the same HANDOFF veil the gear faded into,
+      // lifts to reveal the film, then settles to canvas brown
+      // for the section that follows.
       scrubVideo(pin, p);
       if (pin.video) {
         pin.video.style.transform = 'scale(' + (1 + fade(p, 0.88, 1) * 0.45) + ')';
       }
       if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.45);
-      if (pin.fadeEl) pin.fadeEl.style.opacity = String(fade(p, 0.93, 1));
+      if (pin.fadeEl) {
+        var inVeil = 1 - fade(p, 0.03, 0.14);
+        var outVeil = fade(p, 0.93, 1);
+        if (inVeil >= outVeil) {
+          pin.fadeEl.style.background = HANDOFF;
+          pin.fadeEl.style.opacity = String(inVeil);
+        } else {
+          pin.fadeEl.style.background = CANVAS;
+          pin.fadeEl.style.opacity = String(outVeil);
+        }
+      }
     },
 
     streaks: function (pin, p) {
@@ -178,7 +199,11 @@
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
-      if (pin.fadeEl) pin.fadeEl.style.opacity = String(fade(p, 0.93, 1));
+      // settle to canvas brown so reviews continues the same shade
+      if (pin.fadeEl) {
+        pin.fadeEl.style.background = CANVAS;
+        pin.fadeEl.style.opacity = String(fade(p, 0.9, 1));
+      }
     },
 
     lift: function (pin, p) {
