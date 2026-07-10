@@ -108,9 +108,9 @@
   // Scroll cue: ring of little dots around the chevron
   var cueRing = document.querySelector('[data-cue-ring]');
   if (cueRing) {
-    for (var d = 0; d < 10; d++) {
+    for (var d = 0; d < 16; d++) {
       var dot = document.createElement('i');
-      dot.style.setProperty('--dot-angle', (d * 36) + 'deg');
+      dot.style.setProperty('--dot-angle', (d * 22.5) + 'deg');
       cueRing.appendChild(dot);
     }
   }
@@ -338,17 +338,22 @@
   /* ----------------------------------------------------------
      Count-up numbers (statement stats)
      ---------------------------------------------------------- */
+  function fmtCount(val, el) {
+    var pad = parseInt(el.getAttribute('data-pad'), 10) || 0;
+    var s = pad ? String(val).padStart(pad, '0') : String(val);
+    if (el.hasAttribute('data-comma')) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return s;
+  }
+
   function countUp(el) {
     var to = parseInt(el.getAttribute('data-to'), 10) || 0;
-    var pad = parseInt(el.getAttribute('data-pad'), 10) || 0;
-    var dur = 1100;
+    var dur = 1400;
     var t0 = null;
     function frame(ts) {
       if (t0 === null) t0 = ts;
       var k = clamp((ts - t0) / dur, 0, 1);
       var eased = 1 - Math.pow(1 - k, 3);
-      var val = Math.round(eased * to);
-      el.textContent = pad ? String(val).padStart(pad, '0') : String(val);
+      el.textContent = fmtCount(Math.round(eased * to), el);
       if (k < 1) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -359,8 +364,7 @@
     if (reduced) {
       countEls.forEach(function (el) {
         var to = parseInt(el.getAttribute('data-to'), 10) || 0;
-        var pad = parseInt(el.getAttribute('data-pad'), 10) || 0;
-        el.textContent = pad ? String(to).padStart(pad, '0') : String(to);
+        el.textContent = fmtCount(to, el);
       });
     } else {
       var countIo = new IntersectionObserver(function (entries) {
