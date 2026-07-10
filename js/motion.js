@@ -72,6 +72,7 @@
         video: video,
         reverse: video ? video.hasAttribute('data-scrub-reverse') : false,
         caption: el.querySelector('[data-pin-caption]'),
+        fadeEl: el.querySelector('[data-pin-fade]'),
         vt: 0 // smoothed video time
       };
     }
@@ -98,6 +99,16 @@
   /* Per-section choreography */
   var heroLockup = document.querySelector('[data-hero-lockup]');
   var heroCue = document.querySelector('[data-hero-cue]');
+
+  // Scroll cue: ring of little dots around the label
+  var cueRing = document.querySelector('[data-cue-ring]');
+  if (cueRing) {
+    for (var d = 0; d < 12; d++) {
+      var dot = document.createElement('i');
+      dot.style.setProperty('--dot-angle', (d * 30) + 'deg');
+      cueRing.appendChild(dot);
+    }
+  }
   var gearEl = document.querySelector('[data-gear]');
   var gearBeats = document.querySelectorAll('[data-gear-beat]');
   var gearHint = document.querySelector('.gear-stage__hint');
@@ -106,6 +117,11 @@
   var handlers = {
     hero: function (pin, p) {
       scrubVideo(pin, p);
+      // gentle zoom as you leave — the first "pass through"
+      if (pin.video) {
+        pin.video.style.transform =
+          'translateY(' + (p * 40) + 'px) scale(' + (1 + fade(p, 0.55, 1) * 0.18) + ')';
+      }
       if (heroLockup) {
         heroLockup.style.transform = 'translateY(' + (p * -70) + 'px)';
         heroLockup.style.opacity = String(1 - fade(p, 0.5, 0.85));
@@ -115,8 +131,9 @@
 
     gear: function (pin, p) {
       // Tunnel approach: gear starts small, swells until its dark
-      // bore swallows the viewport by ~0.9 — the next section's
-      // film starts equally dark, so the handoff reads seamless.
+      // bore swallows the viewport, then the whole stage settles
+      // to darkness so the brake film's black opening matches
+      // exactly regardless of the gear image's end color.
       if (gearEl) {
         var scale = 0.42 + Math.pow(fade(p, 0, 0.92), 1.35) * 5.2;
         gearEl.style.transform = 'rotate(' + (p * 200) + 'deg) scale(' + scale + ')';
@@ -126,33 +143,42 @@
         var start = 0.1 + (i / n) * 0.72;
         var end = 0.1 + ((i + 1) / n) * 0.72;
         var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.88, 0.94));
+        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.86, 0.92));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
+      if (pin.fadeEl) pin.fadeEl.style.opacity = String(fade(p, 0.84, 0.97));
     },
 
     brake: function (pin, p) {
-      // Out of the brake disc hub: the film starts near-black
-      // (matching the gear's dark center), pulls back to the
-      // spinning cross-drilled disc and red caliper, and the
-      // rotor glows hot through the back half of the scrub.
+      // Out of the brake disc hub: black opening matches the gear
+      // fade-out; a slight zoom at the end pushes us onward.
       scrubVideo(pin, p);
+      if (pin.video) {
+        pin.video.style.transform = 'scale(' + (1 + fade(p, 0.88, 1) * 0.45) + ')';
+      }
       if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.45);
+      if (pin.fadeEl) pin.fadeEl.style.opacity = String(fade(p, 0.93, 1));
     },
 
     streaks: function (pin, p) {
-      // The taillight film: camera pushes in and the light
-      // stretches into horizontal trails; the service lines
-      // land one by one as the streaks form.
+      // The taillight film: dive through the lens into the warp;
+      // near the end we zoom hard into the stream and pass
+      // through it into the next section — no hard stop.
       scrubVideo(pin, p);
+      if (pin.video) {
+        var zoom = 1 + Math.pow(fade(p, 0.78, 1), 1.6) * 1.9;
+        pin.video.style.transform = 'scale(' + zoom + ')';
+      }
+      var gone = fade(p, 0.9, 0.99);
       streakRows.forEach(function (row, i) {
-        var at = 0.5 + i * 0.11;
-        var vis = fade(p, at, at + 0.09);
+        var at = 0.5 + i * 0.1;
+        var vis = fade(p, at, at + 0.09) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
+      if (pin.fadeEl) pin.fadeEl.style.opacity = String(fade(p, 0.93, 1));
     },
 
     lift: function (pin, p) {
