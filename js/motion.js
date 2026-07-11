@@ -156,45 +156,46 @@
       // color that can't pixelate — carrying the tunnel dive into
       // the brake film's matching black.
       if (gearEl) {
-        var gScale = 0.5 + Math.pow(fade(p, 0, 0.88), 1.3) * 1.9; // capped
+        var gScale = 0.5 + Math.pow(fade(p, 0, 0.9), 1.3) * 1.9; // capped
         gearEl.style.transform = 'rotate(' + (p * 220) + 'deg) scale(' + gScale + ')';
-        gearEl.style.opacity = String(1 - fade(p, 0.74, 0.9));
+        gearEl.style.opacity = String(1 - fade(p, 0.84, 0.96));
       }
-      // the dark bore only takes over in the final stretch, so we
-      // don't sit in black for long before the brake film
+      // beats own the beginning and middle; the dark bore only
+      // takes over in the last ~15%, so the black dwell before the
+      // brake film is one short beat of scroll
       if (gearHole) {
-        var hScale = 0.34 + Math.pow(fade(p, 0.55, 0.98), 1.5) * 8;
+        var hScale = 0.34 + Math.pow(fade(p, 0.8, 0.99), 1.4) * 8;
         gearHole.style.transform = 'scale(' + hScale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.06 + (i / n) * 0.74;
-        var end = 0.06 + ((i + 1) / n) * 0.74;
+        var start = 0.06 + (i / n) * 0.78;
+        var end = 0.06 + ((i + 1) / n) * 0.78;
         var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.84, 0.92));
+        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.88, 0.95));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
-      // veil finishes into HANDOFF black late, so the black dwell
-      // before the brake film is short
       if (pin.fadeEl) {
         pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(fade(p, 0.9, 0.99));
+        pin.fadeEl.style.opacity = String(fade(p, 0.96, 1));
       }
     },
 
     brake: function (pin, p) {
-      // Opens under the same HANDOFF veil the gear faded into,
-      // lifts to reveal the film, then settles to canvas brown
-      // for the section that follows.
-      scrubVideo(pin, p);
+      // Opens under the same HANDOFF veil the gear faded into. The
+      // film's own first quarter is the dark hub pull-out, so the
+      // scrub is warped: that dark stretch flies by in the first
+      // ~7% of scroll and the visible disc arrives immediately.
+      var pw = 0.25 * fade(p, 0, 0.07) + 0.75 * fade(p, 0.07, 1);
+      scrubVideo(pin, pw);
       if (pin.video) {
         pin.video.style.transform = 'scale(' + (1 + fade(p, 0.88, 1) * 0.45) + ')';
       }
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.45);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.4);
       if (pin.fadeEl) {
-        var inVeil = 1 - fade(p, 0.03, 0.14);
+        var inVeil = 1 - fade(p, 0.01, 0.06);
         var outVeil = fade(p, 0.93, 1);
         if (inVeil >= outVeil) {
           pin.fadeEl.style.background = HANDOFF;
@@ -207,18 +208,20 @@
     },
 
     streaks: function (pin, p) {
-      // The taillight film: dive through the lens into the warp;
-      // near the end we zoom hard into the stream and pass
-      // through it into the next section — no hard stop.
+      // Played in REVERSE: we enter already inside the red/amber
+      // warp void, the text lands in the stream, then the streaks
+      // collapse back into the taillight lens and we exit on the
+      // car's rear corner — out through the light.
       scrubVideo(pin, p);
       if (pin.video) {
-        var zoom = 1 + Math.pow(fade(p, 0.78, 1), 1.6) * 1.9;
+        // fly-in: start deep in the stream and pull back to 1:1
+        var zoom = 1 + (1 - fade(p, 0, 0.22)) * 1.6;
         pin.video.style.transform = 'scale(' + zoom + ')';
       }
-      var gone = fade(p, 0.9, 0.99);
+      var gone = fade(p, 0.52, 0.62); // clear before the lens reforms
       streakRows.forEach(function (row, i) {
-        var at = 0.5 + i * 0.1;
-        var vis = fade(p, at, at + 0.09) * (1 - gone);
+        var at = 0.1 + i * 0.09;
+        var vis = fade(p, at, at + 0.08) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
@@ -227,14 +230,9 @@
       // brown at the end so reviews continues the same shade
       if (pin.fadeEl) {
         var intro = 1 - fade(p, 0, 0.06);
-        var outro = fade(p, 0.9, 1);
-        if (intro >= outro) {
-          pin.fadeEl.style.background = CANVAS;
-          pin.fadeEl.style.opacity = String(intro);
-        } else {
-          pin.fadeEl.style.background = CANVAS;
-          pin.fadeEl.style.opacity = String(outro);
-        }
+        var outro = fade(p, 0.92, 1);
+        pin.fadeEl.style.background = CANVAS;
+        pin.fadeEl.style.opacity = String(Math.max(intro, outro));
       }
     },
 
