@@ -183,48 +183,45 @@
       }
     },
 
-    brake: function (pin, p) {
-      // The gear already did the dark dive, so the rotor film SKIPS
-      // its own dark hub pull-out: the scrub starts ~22% into the
-      // clip, on the already-revealed spinning disc. The opening
-      // veil lifts almost immediately — black turns to rotor the
-      // moment the section begins.
-      scrubVideo(pin, 0.22 + p * 0.78);
+    brake: function (pin, p, pEnter) {
+      // The rotor reveals DURING the sticky-release crossover: its
+      // scrub is driven by pEnter (from the moment the section rises
+      // into view), so the spinning disc already appears in the
+      // lower frame while the black gear stage slides out above —
+      // killing the dead black gap. Film also skips its own dark
+      // hub pull-out (starts ~22% in).
+      scrubVideo(pin, 0.22 + pEnter * 0.78);
       if (pin.video) {
         pin.video.style.transform = 'scale(' + (1 + fade(p, 0.9, 1) * 0.4) + ')';
       }
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.28 && p < 0.95);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.25 && p < 0.95);
       if (pin.fadeEl) {
-        var inVeil = 1 - fade(p, 0, 0.04);
+        var inVeil = 1 - fade(pEnter, 0, 0.1);
         var outVeil = fade(p, 0.95, 1);
         pin.fadeEl.style.background = inVeil >= outVeil ? HANDOFF : CANVAS;
         pin.fadeEl.style.opacity = String(Math.max(inVeil, outVeil));
       }
     },
 
-    streaks: function (pin, p) {
-      // Played in REVERSE: we enter already inside the red/amber
-      // warp void, the text lands in the stream, then the streaks
-      // collapse back into the taillight lens and we exit on the
-      // car's rear corner — out through the light.
-      scrubVideo(pin, p);
+    streaks: function (pin, p, pEnter) {
+      // Reversed and driven by pEnter, so the red/amber warp is
+      // visible as the section rises into view — no dead gap after
+      // the rotor. Text lands once pinned, then the streaks collapse
+      // into the lens and the scene exits on the car's rear corner.
+      scrubVideo(pin, pEnter);
       if (pin.video) {
-        // fly-in: start deep in the stream and pull back to 1:1
-        var zoom = 1 + (1 - fade(p, 0, 0.22)) * 1.6;
+        var zoom = 1 + (1 - fade(pEnter, 0, 0.35)) * 1.6;
         pin.video.style.transform = 'scale(' + zoom + ')';
       }
       var gone = fade(p, 0.52, 0.62); // clear before the lens reforms
       streakRows.forEach(function (row, i) {
-        var at = 0.1 + i * 0.09;
+        var at = 0.12 + i * 0.09;
         var vis = fade(p, at, at + 0.08) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
-      // open under a brief veil (hides the first raw/decoded frame
-      // that could flash before the scrub seeks), settle to canvas
-      // brown at the end so reviews continues the same shade
       if (pin.fadeEl) {
-        var intro = 1 - fade(p, 0, 0.06);
+        var intro = 1 - fade(pEnter, 0, 0.1);
         var outro = fade(p, 0.92, 1);
         pin.fadeEl.style.background = CANVAS;
         pin.fadeEl.style.opacity = String(Math.max(intro, outro));
@@ -252,8 +249,14 @@
       var span = pin.el.offsetHeight - window.innerHeight;
       if (span <= 0) return;
       var p = clamp(-rect.top / span, 0, 1);
+      // pEnter runs from the moment the section's top rises into
+      // view (bottom of viewport) through the end of its scrub —
+      // lets a film reveal DURING the sticky-release crossover
+      // between sections instead of sitting frozen in black.
+      var vh = window.innerHeight;
+      var pEnter = clamp((vh - rect.top) / (vh + span), 0, 1);
       var fn = handlers[pin.name];
-      if (fn) fn(pin, p);
+      if (fn) fn(pin, p, pEnter);
     });
   }
 
