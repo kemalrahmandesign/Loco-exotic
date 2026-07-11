@@ -156,74 +156,70 @@
       // color that can't pixelate — carrying the tunnel dive into
       // the brake film's matching black.
       if (gearEl) {
-        var gScale = 0.5 + Math.pow(fade(p, 0, 0.9), 1.3) * 1.9; // capped
+        var gScale = 0.5 + Math.pow(fade(p, 0, 0.8), 1.3) * 1.9; // capped
         gearEl.style.transform = 'rotate(' + (p * 220) + 'deg) scale(' + gScale + ')';
-        gearEl.style.opacity = String(1 - fade(p, 0.84, 0.96));
+        gearEl.style.opacity = String(1 - fade(p, 0.72, 0.86));
       }
-      // beats own the beginning and middle; the bore snaps to black
-      // only in the last few percent, right as the section ends —
-      // so there's no long dark tail before the rotor
+      // bore dive happens while the rotor curtain rises over the
+      // lower frame (the overlapped next section); by the time the
+      // curtain locks, the screen is one continuous dark
       if (gearHole) {
-        var hScale = 0.34 + Math.pow(fade(p, 0.9, 1), 1.3) * 8;
+        var hScale = 0.34 + Math.pow(fade(p, 0.62, 0.85), 1.3) * 8;
         gearHole.style.transform = 'scale(' + hScale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.06 + (i / n) * 0.86;
-        var end = 0.06 + ((i + 1) / n) * 0.86;
+        var start = 0.06 + (i / n) * 0.6;
+        var end = 0.06 + ((i + 1) / n) * 0.6;
         var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.95, 1));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
       if (pin.fadeEl) {
         pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(fade(p, 0.97, 1));
+        pin.fadeEl.style.opacity = String(fade(p, 0.82, 0.92));
       }
     },
 
-    brake: function (pin, p, pEnter) {
-      // The rotor reveals DURING the sticky-release crossover: its
-      // scrub is driven by pEnter (from the moment the section rises
-      // into view), so the spinning disc already appears in the
-      // lower frame while the black gear stage slides out above —
-      // killing the dead black gap. Film also skips its own dark
-      // hub pull-out (starts ~22% in).
-      scrubVideo(pin, 0.22 + pEnter * 0.78);
+    brake: function (pin, p) {
+      // Pins the instant the gear releases (sections overlap one
+      // viewport). Held dark by the veil while rising as a curtain;
+      // on lock the veil lifts and the compressed hub pull-out
+      // plays over the first ~16% — dive in, straight back out.
+      var f = 0.25 * fade(p, 0.02, 0.16) + 0.75 * fade(p, 0.16, 1);
+      scrubVideo(pin, f);
       if (pin.video) {
         pin.video.style.transform = 'scale(' + (1 + fade(p, 0.9, 1) * 0.4) + ')';
       }
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.25 && p < 0.95);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.3 && p < 0.95);
       if (pin.fadeEl) {
-        var inVeil = 1 - fade(pEnter, 0, 0.1);
-        var outVeil = fade(p, 0.95, 1);
-        pin.fadeEl.style.background = inVeil >= outVeil ? HANDOFF : CANVAS;
-        pin.fadeEl.style.opacity = String(Math.max(inVeil, outVeil));
+        pin.fadeEl.style.background = HANDOFF;
+        pin.fadeEl.style.opacity = String(1 - fade(p, 0.02, 0.08));
       }
     },
 
-    streaks: function (pin, p, pEnter) {
-      // Reversed and driven by pEnter, so the red/amber warp is
-      // visible as the section rises into view — no dead gap after
-      // the rotor. Text lands once pinned, then the streaks collapse
-      // into the lens and the scene exits on the car's rear corner.
-      scrubVideo(pin, pEnter);
+    streaks: function (pin, p) {
+      // Reversed warp. Rises as a dark curtain over the glowing
+      // rotor (overlapped section), then the veil lifts straight
+      // into the deep red/amber stream with a fly-in zoom; text
+      // lands, streaks collapse into the lens, exit on the car.
+      scrubVideo(pin, p);
       if (pin.video) {
-        var zoom = 1 + (1 - fade(pEnter, 0, 0.35)) * 1.6;
+        var zoom = 1 + (1 - fade(p, 0.02, 0.3)) * 1.6;
         pin.video.style.transform = 'scale(' + zoom + ')';
       }
-      var gone = fade(p, 0.52, 0.62); // clear before the lens reforms
+      var gone = fade(p, 0.55, 0.65); // clear before the lens reforms
       streakRows.forEach(function (row, i) {
-        var at = 0.12 + i * 0.09;
+        var at = 0.14 + i * 0.09;
         var vis = fade(p, at, at + 0.08) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
       if (pin.fadeEl) {
-        var intro = 1 - fade(pEnter, 0, 0.1);
+        var intro = 1 - fade(p, 0.02, 0.1);
         var outro = fade(p, 0.92, 1);
-        pin.fadeEl.style.background = CANVAS;
+        pin.fadeEl.style.background = intro >= outro ? HANDOFF : CANVAS;
         pin.fadeEl.style.opacity = String(Math.max(intro, outro));
       }
     },

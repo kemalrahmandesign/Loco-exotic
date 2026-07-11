@@ -195,10 +195,19 @@ a { color: var(--color-warm-cream); }
 .pin { position: relative; }
 
 .pin--hero    { height: 260vh; }
-.pin--gear    { height: 240vh; }
-.pin--brake   { height: 190vh; }
-.pin--streaks { height: 200vh; }
+.pin--gear    { height: 340vh; }
+.pin--brake   { height: 290vh; }
+.pin--streaks { height: 300vh; }
 .pin--lift    { height: 420vh; }
+
+/* Overlap the film sections by one viewport: the incoming stage
+   pins at the exact moment the previous stage releases, so the
+   structural sticky-release gap (a full screen of dead scroll
+   between pinned sections) disappears. While rising, the incoming
+   stage is held dark by its veil — a curtain wiping up over the
+   previous scene's dive — and reveals the instant it locks. */
+.pin--brake,
+.pin--streaks { margin-top: -100vh; }
 
 .pin__stage {
   position: sticky;
@@ -952,7 +961,7 @@ html.js:not(.reduced) .streak-row {
   html { scroll-behavior: auto; }
   .marquee__track { animation: none; }
   .hero__cue { display: none; }
-  .pin { height: auto !important; }
+  .pin { height: auto !important; margin-top: 0 !important; }
   .pin__stage { position: relative; height: 100svh; }
   .gear-stage__gear { display: none; }
   .gear-stage { place-items: center; }
