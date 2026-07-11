@@ -160,50 +160,45 @@
         gearEl.style.transform = 'rotate(' + (p * 220) + 'deg) scale(' + gScale + ')';
         gearEl.style.opacity = String(1 - fade(p, 0.84, 0.96));
       }
-      // beats own the beginning and middle; the dark bore only
-      // takes over in the last ~15%, so the black dwell before the
-      // brake film is one short beat of scroll
+      // beats own the beginning and middle; the bore snaps to black
+      // only in the last few percent, right as the section ends —
+      // so there's no long dark tail before the rotor
       if (gearHole) {
-        var hScale = 0.34 + Math.pow(fade(p, 0.8, 0.99), 1.4) * 8;
+        var hScale = 0.34 + Math.pow(fade(p, 0.9, 1), 1.3) * 8;
         gearHole.style.transform = 'scale(' + hScale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.06 + (i / n) * 0.78;
-        var end = 0.06 + ((i + 1) / n) * 0.78;
+        var start = 0.06 + (i / n) * 0.86;
+        var end = 0.06 + ((i + 1) / n) * 0.86;
         var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
-        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.88, 0.95));
+        if (i === n - 1) vis = fade(p, start, start + 0.05) * (1 - fade(p, 0.95, 1));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
       if (pin.fadeEl) {
         pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(fade(p, 0.96, 1));
+        pin.fadeEl.style.opacity = String(fade(p, 0.97, 1));
       }
     },
 
     brake: function (pin, p) {
-      // Opens under the same HANDOFF veil the gear faded into. The
-      // film's own first quarter is the dark hub pull-out, so the
-      // scrub is warped: that dark stretch flies by in the first
-      // ~7% of scroll and the visible disc arrives immediately.
-      var pw = 0.25 * fade(p, 0, 0.07) + 0.75 * fade(p, 0.07, 1);
-      scrubVideo(pin, pw);
+      // The gear already did the dark dive, so the rotor film SKIPS
+      // its own dark hub pull-out: the scrub starts ~22% into the
+      // clip, on the already-revealed spinning disc. The opening
+      // veil lifts almost immediately — black turns to rotor the
+      // moment the section begins.
+      scrubVideo(pin, 0.22 + p * 0.78);
       if (pin.video) {
-        pin.video.style.transform = 'scale(' + (1 + fade(p, 0.88, 1) * 0.45) + ')';
+        pin.video.style.transform = 'scale(' + (1 + fade(p, 0.9, 1) * 0.4) + ')';
       }
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.4);
+      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.28 && p < 0.95);
       if (pin.fadeEl) {
-        var inVeil = 1 - fade(p, 0.01, 0.06);
-        var outVeil = fade(p, 0.93, 1);
-        if (inVeil >= outVeil) {
-          pin.fadeEl.style.background = HANDOFF;
-          pin.fadeEl.style.opacity = String(inVeil);
-        } else {
-          pin.fadeEl.style.background = CANVAS;
-          pin.fadeEl.style.opacity = String(outVeil);
-        }
+        var inVeil = 1 - fade(p, 0, 0.04);
+        var outVeil = fade(p, 0.95, 1);
+        pin.fadeEl.style.background = inVeil >= outVeil ? HANDOFF : CANVAS;
+        pin.fadeEl.style.opacity = String(Math.max(inVeil, outVeil));
       }
     },
 

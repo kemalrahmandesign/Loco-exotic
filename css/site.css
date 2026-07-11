@@ -196,8 +196,8 @@ a { color: var(--color-warm-cream); }
 
 .pin--hero    { height: 260vh; }
 .pin--gear    { height: 240vh; }
-.pin--brake   { height: 280vh; }
-.pin--streaks { height: 280vh; }
+.pin--brake   { height: 190vh; }
+.pin--streaks { height: 200vh; }
 .pin--lift    { height: 420vh; }
 
 .pin__stage {
