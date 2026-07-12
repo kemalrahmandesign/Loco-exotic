@@ -171,69 +171,64 @@
       if (heroCue) heroCue.style.opacity = String(1 - fade(p, 0.02, 0.1));
     },
 
-    // ONE stage, three layers, every hand-off through the center:
-    //   gear spins → dive into its dark bore → rotor opens from the
-    //   center → push through the hub → warp opens from the center.
+    // ONE stage, three stacked layers. Each scene plays, then zooms
+    // in and cross-fades into the next — that's the whole trick.
+    //   gear   active 0.00–0.34, hands off 0.30–0.38
+    //   rotor  active 0.38–0.66, hands off 0.64–0.72
+    //   warp   active 0.72–1.00
     tunnel: function (pin, p) {
-      // 1. GEAR (p 0 – 0.30): rotate + modest grow, beats crossfade,
-      //    the solid dark bore expands from the middle to fill black.
+      // GEAR — spin + slow zoom, beats crossfade; zoom in hard and
+      // fade out across the hand-off.
       if (gearEl) {
-        var gScale = 0.5 + Math.pow(fade(p, 0, 0.3), 1.3) * 1.4;
-        gearEl.style.transform = 'rotate(' + (p * 200) + 'deg) scale(' + gScale + ')';
-        gearEl.style.opacity = String(1 - fade(p, 0.24, 0.32));
+        var gScale = 0.9 + fade(p, 0, 0.34) * 0.8 + fade(p, 0.3, 0.38) * 1.4;
+        gearEl.style.transform = 'rotate(' + (p * 180) + 'deg) scale(' + gScale + ')';
       }
-      if (gearHole) {
-        var hScale = 0.34 + Math.pow(fade(p, 0.14, 0.3), 1.3) * 8;
-        gearHole.style.transform = 'scale(' + hScale + ')';
-      }
+      if (gearHole) gearHole.style.transform = 'scale(' + (0.34 + fade(p, 0.1, 0.34) * 1.1) + ')';
+      var gearLayer = gearEl && gearEl.closest('.tunnel__gear');
+      if (gearLayer) gearLayer.style.opacity = String(1 - fade(p, 0.3, 0.38));
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var s0 = 0.02 + (i / n) * 0.26;
-        var e0 = 0.02 + ((i + 1) / n) * 0.26;
+        var s0 = 0.02 + (i / n) * 0.28;
+        var e0 = 0.02 + ((i + 1) / n) * 0.28;
         var vis = fade(p, s0, s0 + 0.04) * (1 - fade(p, e0 - 0.04, e0));
+        if (i === n - 1) vis = fade(p, s0, s0 + 0.04) * (1 - fade(p, 0.3, 0.36));
         beat.style.opacity = String(vis);
-        beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
 
-      // 2. ROTOR: circle opens from the CENTER over the black bore
-      //    (p 0.26–0.42); the film's own hub pull-out plays as it
-      //    opens, so the disc emerges from the middle. Glows, then
-      //    we push in toward the hub to hand off to the warp.
+      // ROTOR — fades in from a slight zoom as the gear leaves,
+      // plays/glows, then zooms in and fades out into the warp.
       if (tlBrake) {
-        tlBrake.style.clipPath = 'circle(' + (fade(p, 0.26, 0.42) * 80) + '% at 50% 50%)';
+        tlBrake.style.opacity = String(fade(p, 0.3, 0.38) * (1 - fade(p, 0.64, 0.72)));
       }
-      seekVideo(tlBrakeVid, fade(p, 0.26, 0.64), false);
+      seekVideo(tlBrakeVid, fade(p, 0.34, 0.66), false);
       if (tlBrakeVid) {
-        tlBrakeVid.style.transform = 'scale(' + (1 + fade(p, 0.5, 0.66) * 0.6) + ')';
+        var bIn = (1 - fade(p, 0.3, 0.4)) * 0.15;   // settle from +15%
+        var bOut = fade(p, 0.6, 0.72) * 0.7;         // zoom in on exit
+        tlBrakeVid.style.transform = 'scale(' + (1 + bIn + bOut) + ')';
       }
       if (tlBrakeCap) tlBrakeCap.classList.toggle('is-on', p > 0.44 && p < 0.62);
 
-      // 3. WARP: circle opens from the CENTER out of the glowing hub
-      //    (p 0.60–0.76); reversed film starts in the red/amber
-      //    stream, text lands, streaks collapse back into the lens.
-      if (tlStreaks) {
-        tlStreaks.style.clipPath = 'circle(' + (fade(p, 0.6, 0.76) * 80) + '% at 50% 50%)';
-      }
-      seekVideo(tlStreaksVid, fade(p, 0.6, 1), true);
+      // WARP — fades in from a slight zoom as the rotor leaves;
+      // reversed film (red/amber stream first), text lands, exit.
+      if (tlStreaks) tlStreaks.style.opacity = String(fade(p, 0.64, 0.72));
+      seekVideo(tlStreaksVid, fade(p, 0.66, 1), true);
       if (tlStreaksVid) {
-        tlStreaksVid.style.transform = 'scale(' + (1 + (1 - fade(p, 0.6, 0.82)) * 1.4) + ')';
+        tlStreaksVid.style.transform = 'scale(' + (1 + (1 - fade(p, 0.64, 0.78)) * 0.4) + ')';
       }
       var gone = fade(p, 0.9, 0.97);
       streakRows.forEach(function (row, i) {
-        var at = 0.78 + i * 0.03;
-        var vis = fade(p, at, at + 0.03) * (1 - gone);
+        var at = 0.76 + i * 0.035;
+        var vis = fade(p, at, at + 0.035) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
 
-      // veil: only the very first frame (flash guard) and the very
-      // end (settle to canvas for the reviews section)
+      // veil: flash guard on the first frame, settle to canvas at
+      // the end for the reviews section
       if (pin.fadeEl) {
-        var intro = 1 - fade(p, 0, 0.02);
-        var outro = fade(p, 0.95, 1);
         pin.fadeEl.style.background = CANVAS;
-        pin.fadeEl.style.opacity = String(Math.max(intro, outro));
+        pin.fadeEl.style.opacity = String(Math.max(1 - fade(p, 0, 0.02), fade(p, 0.96, 1)));
       }
     },
 
