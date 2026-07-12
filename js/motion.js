@@ -101,6 +101,19 @@
     }
   }
 
+  /* Same, but for a bare <video> element (tunnel has two of them
+     in one section). Smoothed time is stashed on the element. */
+  function seekVideo(video, prog, reverse) {
+    if (!video || video.readyState < 1 || !video.duration) return;
+    var t = clamp(reverse ? 1 - prog : prog, 0, 1) * (video.duration - 0.05);
+    video._vt = video._vt == null ? t : video._vt + (t - video._vt) * 0.22;
+    if (video.seeking) return;
+    var delta = Math.abs(video.currentTime - video._vt);
+    if (delta < 1 / 30) return;
+    if (delta > 0.5 && typeof video.fastSeek === 'function') video.fastSeek(video._vt);
+    else video.currentTime = video._vt;
+  }
+
   /* Per-section choreography */
   var heroLockup = document.querySelector('[data-hero-lockup]');
   var heroCue = document.querySelector('[data-hero-cue]');
@@ -134,6 +147,15 @@
   var streakRows = document.querySelectorAll('[data-streak-row]');
   var reviewCards = document.querySelectorAll('[data-review-card]');
 
+  // Tunnel layers + their videos
+  var tlBrake = document.querySelector('[data-tl-brake]');
+  var tlBrakeVid = tlBrake && tlBrake.querySelector('[data-tunnel-video]');
+  var tlBrakeCap = document.querySelector('[data-tl-brake-cap]');
+  var tlStreaks = document.querySelector('[data-tl-streaks]');
+  var tlStreaksVid = tlStreaks && tlStreaks.querySelector('[data-tunnel-video]');
+  if (tlBrakeVid) tlBrakeVid.load();
+  if (tlStreaksVid) tlStreaksVid.load();
+
   var handlers = {
     hero: function (pin, p) {
       scrubVideo(pin, p);
@@ -149,77 +171,68 @@
       if (heroCue) heroCue.style.opacity = String(1 - fade(p, 0.02, 0.1));
     },
 
-    gear: function (pin, p) {
-      // The gear rotates and grows only modestly (so the photo never
-      // blows up into visible pixels); the SOLID dark bore disc
-      // behind it is what scales up to swallow the viewport — a flat
-      // color that can't pixelate — carrying the tunnel dive into
-      // the brake film's matching black.
+    // ONE stage, three layers, every hand-off through the center:
+    //   gear spins → dive into its dark bore → rotor opens from the
+    //   center → push through the hub → warp opens from the center.
+    tunnel: function (pin, p) {
+      // 1. GEAR (p 0 – 0.30): rotate + modest grow, beats crossfade,
+      //    the solid dark bore expands from the middle to fill black.
       if (gearEl) {
-        var gScale = 0.5 + Math.pow(fade(p, 0, 0.8), 1.3) * 1.9; // capped
-        gearEl.style.transform = 'rotate(' + (p * 220) + 'deg) scale(' + gScale + ')';
-        gearEl.style.opacity = String(1 - fade(p, 0.72, 0.86));
+        var gScale = 0.5 + Math.pow(fade(p, 0, 0.3), 1.3) * 1.4;
+        gearEl.style.transform = 'rotate(' + (p * 200) + 'deg) scale(' + gScale + ')';
+        gearEl.style.opacity = String(1 - fade(p, 0.24, 0.32));
       }
-      // bore dive happens while the rotor curtain rises over the
-      // lower frame (the overlapped next section); by the time the
-      // curtain locks, the screen is one continuous dark
       if (gearHole) {
-        var hScale = 0.34 + Math.pow(fade(p, 0.62, 0.85), 1.3) * 8;
+        var hScale = 0.34 + Math.pow(fade(p, 0.14, 0.3), 1.3) * 8;
         gearHole.style.transform = 'scale(' + hScale + ')';
       }
       var n = gearBeats.length;
       gearBeats.forEach(function (beat, i) {
-        var start = 0.06 + (i / n) * 0.6;
-        var end = 0.06 + ((i + 1) / n) * 0.6;
-        var vis = fade(p, start, start + 0.05) * (1 - fade(p, end - 0.05, end));
+        var s0 = 0.02 + (i / n) * 0.26;
+        var e0 = 0.02 + ((i + 1) / n) * 0.26;
+        var vis = fade(p, s0, s0 + 0.04) * (1 - fade(p, e0 - 0.04, e0));
         beat.style.opacity = String(vis);
         beat.style.transform = 'translateY(' + ((1 - vis) * 14) + 'px)';
       });
       if (gearHint) gearHint.style.opacity = String((1 - fade(p, 0.04, 0.12)) * 0.9);
-      if (pin.fadeEl) {
-        pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(fade(p, 0.82, 0.92));
-      }
-    },
 
-    brake: function (pin, p) {
-      // Pins the instant the gear releases (sections overlap one
-      // viewport). Held dark by the veil while rising as a curtain;
-      // on lock the veil lifts and the compressed hub pull-out
-      // plays over the first ~16% — dive in, straight back out.
-      var f = 0.25 * fade(p, 0.02, 0.16) + 0.75 * fade(p, 0.16, 1);
-      scrubVideo(pin, f);
-      if (pin.video) {
-        pin.video.style.transform = 'scale(' + (1 + fade(p, 0.9, 1) * 0.4) + ')';
+      // 2. ROTOR: circle opens from the CENTER over the black bore
+      //    (p 0.26–0.42); the film's own hub pull-out plays as it
+      //    opens, so the disc emerges from the middle. Glows, then
+      //    we push in toward the hub to hand off to the warp.
+      if (tlBrake) {
+        tlBrake.style.clipPath = 'circle(' + (fade(p, 0.26, 0.42) * 80) + '% at 50% 50%)';
       }
-      if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.3 && p < 0.95);
-      if (pin.fadeEl) {
-        pin.fadeEl.style.background = HANDOFF;
-        pin.fadeEl.style.opacity = String(1 - fade(p, 0.02, 0.08));
+      seekVideo(tlBrakeVid, fade(p, 0.26, 0.64), false);
+      if (tlBrakeVid) {
+        tlBrakeVid.style.transform = 'scale(' + (1 + fade(p, 0.5, 0.66) * 0.6) + ')';
       }
-    },
+      if (tlBrakeCap) tlBrakeCap.classList.toggle('is-on', p > 0.44 && p < 0.62);
 
-    streaks: function (pin, p) {
-      // Reversed warp. Rises as a dark curtain over the glowing
-      // rotor (overlapped section), then the veil lifts straight
-      // into the deep red/amber stream with a fly-in zoom; text
-      // lands, streaks collapse into the lens, exit on the car.
-      scrubVideo(pin, p);
-      if (pin.video) {
-        var zoom = 1 + (1 - fade(p, 0.02, 0.3)) * 1.6;
-        pin.video.style.transform = 'scale(' + zoom + ')';
+      // 3. WARP: circle opens from the CENTER out of the glowing hub
+      //    (p 0.60–0.76); reversed film starts in the red/amber
+      //    stream, text lands, streaks collapse back into the lens.
+      if (tlStreaks) {
+        tlStreaks.style.clipPath = 'circle(' + (fade(p, 0.6, 0.76) * 80) + '% at 50% 50%)';
       }
-      var gone = fade(p, 0.55, 0.65); // clear before the lens reforms
+      seekVideo(tlStreaksVid, fade(p, 0.6, 1), true);
+      if (tlStreaksVid) {
+        tlStreaksVid.style.transform = 'scale(' + (1 + (1 - fade(p, 0.6, 0.82)) * 1.4) + ')';
+      }
+      var gone = fade(p, 0.9, 0.97);
       streakRows.forEach(function (row, i) {
-        var at = 0.14 + i * 0.09;
-        var vis = fade(p, at, at + 0.08) * (1 - gone);
+        var at = 0.78 + i * 0.03;
+        var vis = fade(p, at, at + 0.03) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
+
+      // veil: only the very first frame (flash guard) and the very
+      // end (settle to canvas for the reviews section)
       if (pin.fadeEl) {
-        var intro = 1 - fade(p, 0.02, 0.1);
-        var outro = fade(p, 0.92, 1);
-        pin.fadeEl.style.background = intro >= outro ? HANDOFF : CANVAS;
+        var intro = 1 - fade(p, 0, 0.02);
+        var outro = fade(p, 0.95, 1);
+        pin.fadeEl.style.background = CANVAS;
         pin.fadeEl.style.opacity = String(Math.max(intro, outro));
       }
     },

@@ -104,104 +104,67 @@
     <hr class="divider" data-draw>
   </div>
 
-  <!-- SERVICES — gear tunnel: approach, enter, pass through -->
-  <section class="pin pin--gear" id="services" data-pin data-pin-name="gear">
-    <div class="pin__stage gear-stage">
-      <img
-        class="gear-stage__gear"
-        data-gear
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_233820_ba786c51-a2cb-4480-bdcb-eec484940f67.png"
-        alt=""
-        aria-hidden="true"
-      >
-      <span class="gear-stage__hole" data-gear-hole aria-hidden="true"></span>
-      <div class="gear-stage__beats">
-        <div class="gear-beat" data-gear-beat>
-          <span class="gear-beat__index">01</span>
-          <h3 class="gear-beat__name">German car repair</h3>
-          <p class="gear-beat__sub">BMW · Mercedes-Benz · Porsche</p>
-        </div>
-        <div class="gear-beat" data-gear-beat>
-          <span class="gear-beat__index">02</span>
-          <h3 class="gear-beat__name">Italian car repair</h3>
-          <p class="gear-beat__sub">Ferrari · Lamborghini · Maserati · Alfa Romeo</p>
-        </div>
-        <div class="gear-beat" data-gear-beat>
-          <span class="gear-beat__index">03</span>
-          <h3 class="gear-beat__name">Luxury &amp; exotic service</h3>
-          <p class="gear-beat__sub">Bentley · Aston Martin · McLaren &amp; more</p>
-        </div>
-        <div class="gear-beat" data-gear-beat>
-          <span class="gear-beat__index">04</span>
-          <h3 class="gear-beat__name">Diagnostics &amp; maintenance</h3>
-          <p class="gear-beat__sub">Factory-level equipment, honest counsel</p>
-        </div>
-      </div>
-      <p class="gear-stage__hint label" data-intro-fade aria-hidden="true">Services — keep scrolling</p>
-      <div class="pin__fade" data-pin-fade aria-hidden="true"></div>
-    </div>
-  </section>
+  <!-- TUNNEL — gear, rotor and warp as ONE pinned stage; every
+       hand-off opens from the CENTER of the frame, never a curtain -->
+  <section class="pin pin--tunnel" id="services" data-pin data-pin-name="tunnel" aria-label="Services">
+    <div class="pin__stage tunnel">
 
-  <!-- TUNNEL EXIT — out of the brake disc hub, rotor glows, scrubbed -->
-  <section class="pin pin--brake" data-pin data-pin-name="brake" aria-label="Brakes and rotors">
-    <div class="pin__stage">
-      <video
-        class="pin__film"
-        data-scrub
-        muted
-        playsinline
-        webkit-playsinline
-        preload="auto"
-        disablepictureinpicture
-        aria-hidden="true"
-        tabindex="-1"
-      >
-        <source src="media/brake.mp4" type="video/mp4">
-      </video>
-      <div class="pin__caption" data-pin-caption>
-        <p class="label">Brakes · Rotors · Calipers</p>
-        <h2 class="heading">Stopping power, restored to spec.</h2>
+      <div class="tunnel__layer tunnel__gear">
+        <img
+          class="gear-stage__gear"
+          data-gear
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_233820_ba786c51-a2cb-4480-bdcb-eec484940f67.png"
+          alt="" aria-hidden="true"
+        >
+        <span class="gear-stage__hole" data-gear-hole aria-hidden="true"></span>
+        <div class="gear-stage__beats">
+          <div class="gear-beat" data-gear-beat>
+            <span class="gear-beat__index">01</span>
+            <h3 class="gear-beat__name">German car repair</h3>
+            <p class="gear-beat__sub">BMW · Mercedes-Benz · Porsche</p>
+          </div>
+          <div class="gear-beat" data-gear-beat>
+            <span class="gear-beat__index">02</span>
+            <h3 class="gear-beat__name">Italian car repair</h3>
+            <p class="gear-beat__sub">Ferrari · Lamborghini · Maserati · Alfa Romeo</p>
+          </div>
+          <div class="gear-beat" data-gear-beat>
+            <span class="gear-beat__index">03</span>
+            <h3 class="gear-beat__name">Luxury &amp; exotic service</h3>
+            <p class="gear-beat__sub">Bentley · Aston Martin · McLaren &amp; more</p>
+          </div>
+          <div class="gear-beat" data-gear-beat>
+            <span class="gear-beat__index">04</span>
+            <h3 class="gear-beat__name">Diagnostics &amp; maintenance</h3>
+            <p class="gear-beat__sub">Factory-level equipment, honest counsel</p>
+          </div>
+        </div>
+        <p class="gear-stage__hint label" data-intro-fade aria-hidden="true">Services — keep scrolling</p>
       </div>
-      <div class="pin__fade" data-pin-fade aria-hidden="true"></div>
-    </div>
-  </section>
 
-  <!-- TAILLIGHT — reversed: enter inside the warp, exit out of the lens -->
-  <section class="pin pin--streaks" data-pin data-pin-name="streaks" aria-label="Bodywork, paint and detail">
-    <div class="pin__stage streaks">
-      <video
-        class="pin__film"
-        data-scrub
-        data-scrub-reverse
-        muted
-        playsinline
-        webkit-playsinline
-        preload="auto"
-        disablepictureinpicture
-        aria-hidden="true"
-        tabindex="-1"
-      >
-        <source src="media/tail.mp4" type="video/mp4">
-      </video>
-      <div class="streaks__rows">
-        <div class="streak-row" data-streak-row>
-          <span class="streak-row__index">01</span>
-          <span class="streak-row__name">Paint correction</span>
-        </div>
-        <div class="streak-row" data-streak-row>
-          <span class="streak-row__index">02</span>
-          <span class="streak-row__name">Paint protection film</span>
-        </div>
-        <div class="streak-row" data-streak-row>
-          <span class="streak-row__index">03</span>
-          <span class="streak-row__name">Ceramic coating</span>
-        </div>
-        <div class="streak-row" data-streak-row>
-          <span class="streak-row__index">04</span>
-          <span class="streak-row__name">Wheel &amp; trim refinishing</span>
+      <div class="tunnel__layer tunnel__brake" data-tl-brake>
+        <video data-tunnel-video muted playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1">
+          <source src="media/brake.mp4" type="video/mp4">
+        </video>
+        <div class="pin__caption" data-tl-brake-cap>
+          <p class="label">Brakes · Rotors · Calipers</p>
+          <h2 class="heading">Stopping power, restored to spec.</h2>
         </div>
       </div>
-      <p class="streaks__kicker label" data-reveal>Bodywork · Paint · Detail</p>
+
+      <div class="tunnel__layer tunnel__streaks" data-tl-streaks>
+        <video data-tunnel-video data-reverse muted playsinline webkit-playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1">
+          <source src="media/tail.mp4" type="video/mp4">
+        </video>
+        <div class="streaks__rows">
+          <div class="streak-row" data-streak-row><span class="streak-row__index">01</span><span class="streak-row__name">Paint correction</span></div>
+          <div class="streak-row" data-streak-row><span class="streak-row__index">02</span><span class="streak-row__name">Paint protection film</span></div>
+          <div class="streak-row" data-streak-row><span class="streak-row__index">03</span><span class="streak-row__name">Ceramic coating</span></div>
+          <div class="streak-row" data-streak-row><span class="streak-row__index">04</span><span class="streak-row__name">Wheel &amp; trim refinishing</span></div>
+        </div>
+        <p class="streaks__kicker label">Bodywork · Paint · Detail</p>
+      </div>
+
       <div class="pin__fade" data-pin-fade aria-hidden="true"></div>
     </div>
   </section>
