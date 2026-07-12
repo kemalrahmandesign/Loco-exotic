@@ -195,19 +195,8 @@ a { color: var(--color-warm-cream); }
 .pin { position: relative; }
 
 .pin--hero    { height: 260vh; }
-.pin--gear    { height: 340vh; }
-.pin--brake   { height: 290vh; }
-.pin--streaks { height: 300vh; }
+.pin--tunnel  { height: 540vh; }
 .pin--lift    { height: 420vh; }
-
-/* Overlap the film sections by one viewport: the incoming stage
-   pins at the exact moment the previous stage releases, so the
-   structural sticky-release gap (a full screen of dead scroll
-   between pinned sections) disappears. While rising, the incoming
-   stage is held dark by its veil — a curtain wiping up over the
-   previous scene's dive — and reveals the instant it locks. */
-.pin--brake,
-.pin--streaks { margin-top: -100vh; }
 
 .pin__stage {
   position: sticky;
@@ -568,12 +557,44 @@ html.js:not(.reduced) .marquee__track {
   to   { transform: translateX(-50%); }
 }
 
-/* ---------- Gear tunnel ---------- */
-.gear-stage {
-  display: grid;
-  place-items: center;
+/* ---------- Tunnel: gear → rotor → warp, one pinned stage ---------- */
+.tunnel {
   background: var(--color-walnut-shadow);
   overflow: hidden;
+}
+
+/* three full-frame layers stacked; higher layers open from the
+   CENTER over lower ones via a growing circular clip — so each
+   hand-off reads as passing THROUGH the middle, never a curtain */
+.tunnel__layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.tunnel__gear {
+  z-index: 1;
+  display: grid;
+  place-items: center;
+}
+
+.tunnel__brake   { z-index: 2; }
+.tunnel__streaks { z-index: 3; }
+
+html.js:not(.reduced) .tunnel__brake,
+html.js:not(.reduced) .tunnel__streaks {
+  clip-path: circle(0% at 50% 50%);
+  will-change: clip-path;
+}
+
+.tunnel__brake video,
+.tunnel__streaks video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
 }
 
 /* transparent cutout — no canvas edge, safe to rotate and scale */
@@ -962,9 +983,10 @@ html.js:not(.reduced) .streak-row {
   .marquee__track { animation: none; }
   .hero__cue { display: none; }
   .pin { height: auto !important; margin-top: 0 !important; }
-  .pin__stage { position: relative; height: 100svh; }
+  .pin__stage { position: relative; height: auto; }
+  .tunnel__layer { position: relative; clip-path: none !important; height: 100svh; }
+  .tunnel__brake video, .tunnel__streaks video { position: absolute; }
   .gear-stage__gear { display: none; }
-  .gear-stage { place-items: center; }
   .gear-beat { opacity: 1; position: relative; grid-area: auto; margin: var(--spacing-24) 0; }
   .gear-stage__beats { position: relative; display: block; padding: var(--spacing-68) var(--spacing-24); }
   .gear-stage__hint { display: none; }
