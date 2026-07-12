@@ -581,11 +581,15 @@ html.js:not(.reduced) .marquee__track {
 .tunnel__brake   { z-index: 2; }
 .tunnel__streaks { z-index: 3; }
 
+/* incoming layers start hidden; JS cross-fades opacity while the
+   outgoing layer zooms in — "zoom in, blend to the next scene" */
 html.js:not(.reduced) .tunnel__brake,
 html.js:not(.reduced) .tunnel__streaks {
-  clip-path: circle(0% at 50% 50%);
-  will-change: clip-path;
+  opacity: 0;
+  will-change: opacity, transform;
 }
+
+.tunnel__gear { will-change: opacity, transform; }
 
 .tunnel__brake video,
 .tunnel__streaks video {
