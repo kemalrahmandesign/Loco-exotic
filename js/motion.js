@@ -117,6 +117,34 @@
   /* Per-section choreography */
   var heroLockup = document.querySelector('[data-hero-lockup]');
   var heroCue = document.querySelector('[data-hero-cue]');
+  var heroH1 = document.querySelector('.hero .display');
+  var heroFades = document.querySelectorAll('.hero [data-intro-fade]');
+  var navWordmark = document.querySelector('.nav__wordmark');
+
+  // Measure where the giant hero wordmark needs to land so it can
+  // shrink and dock into the nav's top-left corner on scroll.
+  var heroDock = null;
+  function measureDock() {
+    if (!heroH1 || reduced) return;
+    var prev = heroH1.style.transform;
+    heroH1.style.transform = 'none';
+    var stage = document.querySelector('.hero');
+    if (!stage) return;
+    var r = heroH1.getBoundingClientRect();
+    var sr = stage.getBoundingClientRect();
+    var fs = parseFloat(getComputedStyle(heroH1).fontSize) || 1;
+    heroDock = {
+      x: 24 - (r.left - sr.left),
+      y: 16 - (r.top - sr.top),
+      s: 15 / fs
+    };
+    heroH1.style.transform = prev;
+  }
+  if (!reduced) {
+    window.addEventListener('load', measureDock);
+    window.addEventListener('resize', measureDock);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureDock);
+  }
 
   // Scroll cue: ring of little dots around the chevron
   var cueRing = document.querySelector('[data-cue-ring]');
@@ -164,11 +192,27 @@
         pin.video.style.transform =
           'translateY(' + (p * 40) + 'px) scale(' + (1 + fade(p, 0.55, 1) * 0.18) + ')';
       }
-      if (heroLockup) {
-        heroLockup.style.transform = 'translateY(' + (p * -70) + 'px)';
-        heroLockup.style.opacity = String(1 - fade(p, 0.5, 0.85));
+      // the giant wordmark shrinks and docks into the top-left
+      // corner, then the fixed nav wordmark takes over for the
+      // rest of the site
+      var t = fade(p, 0.1, 0.72);
+      if (heroH1 && heroDock) {
+        heroH1.style.transformOrigin = 'left top';
+        heroH1.style.transform =
+          'translate(' + (heroDock.x * t) + 'px,' + (heroDock.y * t) + 'px) ' +
+          'scale(' + (1 - (1 - heroDock.s) * t) + ')';
+        heroH1.style.opacity = String(1 - fade(p, 0.78, 0.88));
+      }
+      if (p > 0.01) {
+        var meta = 1 - fade(p, 0.04, 0.26);
+        heroFades.forEach(function (el) {
+          if (el === heroCue) return;
+          el.style.transitionDuration = '0s';
+          el.style.opacity = String(meta);
+        });
       }
       if (heroCue) heroCue.style.opacity = String(1 - fade(p, 0.02, 0.1));
+      if (navWordmark) navWordmark.classList.toggle('is-on', p > 0.82);
     },
 
     // ONE stage, three stacked layers. Each scene plays, then zooms
@@ -180,10 +224,10 @@
       // GEAR — spin + slow zoom, beats crossfade; zoom in hard and
       // fade out across the hand-off.
       if (gearEl) {
-        var gScale = 0.9 + fade(p, 0, 0.34) * 0.8 + fade(p, 0.3, 0.38) * 1.4;
+        var gScale = 1.05 + fade(p, 0, 0.34) * 0.55 + fade(p, 0.3, 0.38) * 1.4;
         gearEl.style.transform = 'rotate(' + (p * 180) + 'deg) scale(' + gScale + ')';
       }
-      if (gearHole) gearHole.style.transform = 'scale(' + (0.34 + fade(p, 0.1, 0.34) * 1.1) + ')';
+      if (gearHole) gearHole.style.transform = 'scale(' + (0.5 + fade(p, 0.08, 0.34) * 1.0) + ')';
       var gearLayer = gearEl && gearEl.closest('.tunnel__gear');
       if (gearLayer) gearLayer.style.opacity = String(1 - fade(p, 0.3, 0.38));
       var n = gearBeats.length;
@@ -199,27 +243,27 @@
       // ROTOR — fades in from a slight zoom as the gear leaves,
       // plays/glows, then zooms in and fades out into the warp.
       if (tlBrake) {
-        tlBrake.style.opacity = String(fade(p, 0.3, 0.38) * (1 - fade(p, 0.64, 0.72)));
+        tlBrake.style.opacity = String(fade(p, 0.3, 0.38) * (1 - fade(p, 0.68, 0.76)));
       }
-      seekVideo(tlBrakeVid, fade(p, 0.34, 0.66), false);
+      seekVideo(tlBrakeVid, fade(p, 0.34, 0.68), false);
       if (tlBrakeVid) {
         var bIn = (1 - fade(p, 0.3, 0.4)) * 0.15;   // settle from +15%
-        var bOut = fade(p, 0.6, 0.72) * 0.7;         // zoom in on exit
+        var bOut = fade(p, 0.54, 0.76) * 1.35;       // long, deep zoom into the rotor before the blend
         tlBrakeVid.style.transform = 'scale(' + (1 + bIn + bOut) + ')';
       }
-      if (tlBrakeCap) tlBrakeCap.classList.toggle('is-on', p > 0.44 && p < 0.62);
+      if (tlBrakeCap) tlBrakeCap.classList.toggle('is-on', p > 0.44 && p < 0.6);
 
       // WARP — fades in from a slight zoom as the rotor leaves;
       // reversed film (red/amber stream first), text lands, exit.
-      if (tlStreaks) tlStreaks.style.opacity = String(fade(p, 0.64, 0.72));
-      seekVideo(tlStreaksVid, fade(p, 0.66, 1), true);
+      if (tlStreaks) tlStreaks.style.opacity = String(fade(p, 0.68, 0.76));
+      seekVideo(tlStreaksVid, fade(p, 0.7, 1), true);
       if (tlStreaksVid) {
-        tlStreaksVid.style.transform = 'scale(' + (1 + (1 - fade(p, 0.64, 0.78)) * 0.4) + ')';
+        tlStreaksVid.style.transform = 'scale(' + (1 + (1 - fade(p, 0.7, 0.82)) * 0.4) + ')';
       }
-      var gone = fade(p, 0.9, 0.97);
+      var gone = fade(p, 0.93, 0.98);
       streakRows.forEach(function (row, i) {
-        var at = 0.76 + i * 0.035;
-        var vis = fade(p, at, at + 0.035) * (1 - gone);
+        var at = 0.8 + i * 0.03;
+        var vis = fade(p, at, at + 0.03) * (1 - gone);
         row.style.opacity = String(vis);
         row.style.transform = 'translateX(' + ((1 - vis) * -24) + 'px)';
       });
@@ -228,7 +272,7 @@
       // the end for the reviews section
       if (pin.fadeEl) {
         pin.fadeEl.style.background = CANVAS;
-        pin.fadeEl.style.opacity = String(Math.max(1 - fade(p, 0, 0.02), fade(p, 0.96, 1)));
+        pin.fadeEl.style.opacity = String(fade(p, 0.96, 1));
       }
     },
 

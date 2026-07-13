@@ -56,7 +56,8 @@ a { color: var(--color-warm-cream); }
   line-height: 0.86;
   font-weight: var(--font-weight-bold);
   letter-spacing: -0.02em;
-  margin: 0;
+  margin: 0 0 0 -0.05em; /* optical left alignment with smaller text */
+  will-change: transform, opacity;
 }
 
 .heading {
@@ -124,6 +125,78 @@ a { color: var(--color-warm-cream); }
   text-underline-offset: 3px;
 }
 
+/* ---------- Hero CTAs ---------- */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em;
+}
+
+.cta--book {
+  background: var(--color-warm-cream);
+  color: var(--color-walnut-shadow);
+  border-radius: var(--radius-buttons-pill);
+  padding: 15px 22px 15px 26px;
+  font-size: 14px;
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+.cta--book:hover { transform: translateY(-2px); }
+
+.cta--book .cta__icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full-round);
+  background: var(--color-walnut-shadow);
+  color: var(--color-warm-cream);
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+.cta--book:hover .cta__icon { transform: translateX(4px); }
+
+.cta--call {
+  border: 1px solid rgba(255, 237, 215, 0.35);
+  border-radius: var(--radius-buttons-pill);
+  padding: 10px 22px 10px 12px;
+  color: var(--color-warm-cream);
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.cta--call:hover {
+  border-color: var(--color-warm-cream);
+  background: rgba(255, 237, 215, 0.06);
+}
+
+.cta--call .cta__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full-round);
+  background: rgba(255, 237, 215, 0.12);
+}
+
+.cta__call {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.cta__call-label {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-driftwood);
+}
+
+.cta__call-num { font-size: 14px; }
+
 /* ---------- Fixed top navigation ---------- */
 .nav {
   position: fixed;
@@ -145,6 +218,15 @@ a { color: var(--color-warm-cream); }
   letter-spacing: 0.01em;
   text-decoration: none;
 }
+
+/* hidden while the giant hero wordmark is on stage; fades in as the
+   hero text shrinks up into this corner */
+html.js:not(.reduced) .nav__wordmark {
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out-expo);
+}
+
+html.js:not(.reduced) .nav__wordmark.is-on { opacity: 1; }
 
 .nav__items { display: flex; gap: var(--spacing-24); }
 
@@ -173,22 +255,20 @@ a { color: var(--color-warm-cream); }
 .nav__item:hover::after,
 .nav__item.is-active::after { transform: scaleX(1); }
 
-/* stock-ticker flip on hover — each letter flips vertically in
-   place with a stagger and leans slightly italic mid-flip */
+/* split-flap ticker: each letter does one fast front flip in place */
 .nav__item .nav__ch {
   display: inline-block;
   backface-visibility: hidden;
 }
 
 .nav__item:hover .nav__ch {
-  animation: nav-flip 0.52s var(--ease-out-expo) both;
-  animation-delay: calc(var(--ch) * 40ms);
+  animation: nav-flip 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(var(--ch) * 18ms);
 }
 
 @keyframes nav-flip {
-  0%   { transform: rotateX(0deg) skewX(0deg); }
-  50%  { transform: rotateX(-180deg) skewX(-11deg); }
-  100% { transform: rotateX(-360deg) skewX(0deg); }
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(-360deg); }
 }
 
 /* ---------- Pinned scrub sections ---------- */
@@ -269,10 +349,12 @@ html.js:not(.reduced) .pin__caption.is-on {
 }
 
 /* staggered placements so cards don't stack in one spot */
-.review-card--1 { top: 30%; left: 6vw; }
-.review-card--2 { top: 24%; right: 6vw; }
-.review-card--3 { top: 54%; left: 12vw; }
-.review-card--4 { top: 50%; right: 8vw; }
+.review-card--1 { top: 14%; left: 6vw; }
+.review-card--2 { top: 10%; right: 6vw; }
+.review-card--3 { top: 40%; left: 12vw; }
+.review-card--4 { top: 36%; right: 10vw; }
+.review-card--5 { top: 66%; left: 7vw; }
+.review-card--6 { top: 62%; right: 7vw; }
 
 .review-card__stars {
   display: block;
@@ -310,10 +392,12 @@ html.js:not(.reduced) .review-card.is-on {
 
 @media (max-width: 900px) {
   .review-card { width: 86vw; left: 7vw !important; right: auto !important; }
-  .review-card--1 { top: 20%; }
-  .review-card--2 { top: 38%; }
-  .review-card--3 { top: 56%; }
-  .review-card--4 { top: 74%; }
+  .review-card--1 { top: 6%; }
+  .review-card--2 { top: 21%; }
+  .review-card--3 { top: 36%; }
+  .review-card--4 { top: 51%; }
+  .review-card--5 { top: 66%; }
+  .review-card--6 { top: 81%; }
 }
 
 /* ---------- Hero ---------- */
@@ -486,13 +570,13 @@ html.js:not(.reduced) .hero__cue-chevron {
 .statement__cols .voice { max-width: 26em; }
 
 /* lead paragraph carries more weight than the follow-up */
-.statement__cols .voice:first-child {
+.statement__lead {
   font-size: clamp(22px, 2.6vw, 34px);
   line-height: 1.2;
 }
 
 .statement__second {
-  margin-top: clamp(24px, 5vh, 68px);
+  margin-top: 0.35em; /* optically align with the larger lead's first line */
   color: var(--color-driftwood);
 }
 
@@ -605,7 +689,7 @@ html.js:not(.reduced) .tunnel__streaks {
 .gear-stage__gear {
   grid-area: 1 / 1;
   z-index: 1;
-  width: min(64vh, 82vw);
+  width: min(96vh, 100vw);
   height: auto;
   will-change: transform;
 }
@@ -616,7 +700,7 @@ html.js:not(.reduced) .tunnel__streaks {
 .gear-stage__hole {
   grid-area: 1 / 1;
   z-index: 2;
-  width: min(64vh, 82vw);
+  width: min(96vh, 100vw);
   aspect-ratio: 1;
   border-radius: var(--radius-full-round);
   background: radial-gradient(circle,
@@ -638,7 +722,7 @@ html.js:not(.reduced) .tunnel__streaks {
 
 .gear-beat {
   grid-area: 1 / 1;
-  max-width: min(52vh, 82vw);
+  max-width: min(60vh, 86vw);
   opacity: 0;
   will-change: transform, opacity;
 }
@@ -1047,7 +1131,7 @@ html.js:not(.reduced) .streak-row {
   /* statement: tighten scale so nothing clips */
   .statement { padding: clamp(80px, 20vw, 120px) var(--spacing-24); }
   .statement__heading { font-size: clamp(34px, 11vw, 52px); max-width: 12em; }
-  .statement__cols .voice:first-child { font-size: clamp(19px, 5.4vw, 24px); }
+  .statement__lead { font-size: clamp(19px, 5.4vw, 24px); }
   .stat__value { font-size: clamp(48px, 15vw, 72px); }
   .stat__label { font-size: 12px; }
 
