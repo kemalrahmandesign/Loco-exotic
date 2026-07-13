@@ -223,7 +223,7 @@ a { color: var(--color-warm-cream); }
    hero text shrinks up into this corner */
 html.js:not(.reduced) .nav__wordmark {
   opacity: 0;
-  transition: opacity 0.35s var(--ease-out-expo);
+  transition: opacity 0.2s ease-out;
 }
 
 html.js:not(.reduced) .nav__wordmark.is-on { opacity: 1; }
@@ -312,8 +312,10 @@ html.js:not(.reduced) .nav__wordmark.is-on { opacity: 1; }
 
 .pin__caption--top {
   bottom: auto;
-  top: clamp(84px, 14vh, 150px);
+  top: clamp(64px, 10vh, 110px);
 }
+
+.heading--sm { font-size: clamp(24px, 2.4vw, 34px); }
 
 /* caption hidden until its scrub moment */
 html.js:not(.reduced) .pin__caption {
@@ -349,12 +351,12 @@ html.js:not(.reduced) .pin__caption.is-on {
 }
 
 /* staggered placements so cards don't stack in one spot */
-.review-card--1 { top: 14%; left: 6vw; }
-.review-card--2 { top: 10%; right: 6vw; }
-.review-card--3 { top: 40%; left: 12vw; }
-.review-card--4 { top: 36%; right: 10vw; }
-.review-card--5 { top: 66%; left: 7vw; }
-.review-card--6 { top: 62%; right: 7vw; }
+.review-card--1 { top: 26%; left: 6vw; }
+.review-card--2 { top: 22%; right: 6vw; }
+.review-card--3 { top: 49%; left: 12vw; }
+.review-card--4 { top: 45%; right: 10vw; }
+.review-card--5 { top: 72%; left: 7vw; }
+.review-card--6 { top: 68%; right: 7vw; }
 
 .review-card__stars {
   display: block;
@@ -392,12 +394,12 @@ html.js:not(.reduced) .review-card.is-on {
 
 @media (max-width: 900px) {
   .review-card { width: 86vw; left: 7vw !important; right: auto !important; }
-  .review-card--1 { top: 6%; }
-  .review-card--2 { top: 21%; }
-  .review-card--3 { top: 36%; }
-  .review-card--4 { top: 51%; }
-  .review-card--5 { top: 66%; }
-  .review-card--6 { top: 81%; }
+  .review-card--1 { top: 16%; }
+  .review-card--2 { top: 30%; }
+  .review-card--3 { top: 44%; }
+  .review-card--4 { top: 58%; }
+  .review-card--5 { top: 72%; }
+  .review-card--6 { top: 86%; }
 }
 
 /* ---------- Hero ---------- */
@@ -969,12 +971,12 @@ html.js:not(.reduced) .tunnel__streaks {
 
 .footer__credit {
   font-size: 10px;
-  color: var(--color-ember-accent);
+  color: var(--color-driftwood);
   margin: 0;
 }
 
 .footer__credit a {
-  color: var(--color-ember-accent);
+  color: var(--color-driftwood);
   text-underline-offset: 3px;
 }
 
