@@ -117,34 +117,7 @@
   /* Per-section choreography */
   var heroLockup = document.querySelector('[data-hero-lockup]');
   var heroCue = document.querySelector('[data-hero-cue]');
-  var heroH1 = document.querySelector('.hero .display');
-  var heroFades = document.querySelectorAll('.hero [data-intro-fade]');
   var navWordmark = document.querySelector('.nav__wordmark');
-
-  // Measure where the giant hero wordmark needs to land so it can
-  // shrink and dock into the nav's top-left corner on scroll.
-  var heroDock = null;
-  function measureDock() {
-    if (!heroH1 || reduced) return;
-    var prev = heroH1.style.transform;
-    heroH1.style.transform = 'none';
-    var stage = document.querySelector('.hero');
-    if (!stage) return;
-    var r = heroH1.getBoundingClientRect();
-    var sr = stage.getBoundingClientRect();
-    var fs = parseFloat(getComputedStyle(heroH1).fontSize) || 1;
-    heroDock = {
-      x: 24 - (r.left - sr.left),
-      y: 16 - (r.top - sr.top),
-      s: 15 / fs
-    };
-    heroH1.style.transform = prev;
-  }
-  if (!reduced) {
-    window.addEventListener('load', measureDock);
-    window.addEventListener('resize', measureDock);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureDock);
-  }
 
   // Scroll cue: ring of little dots around the chevron
   var cueRing = document.querySelector('[data-cue-ring]');
@@ -192,27 +165,15 @@
         pin.video.style.transform =
           'translateY(' + (p * 40) + 'px) scale(' + (1 + fade(p, 0.55, 1) * 0.18) + ')';
       }
-      // the giant wordmark shrinks and docks into the top-left
-      // corner, then the fixed nav wordmark takes over for the
-      // rest of the site
-      var t = fade(p, 0.1, 0.72);
-      if (heroH1 && heroDock) {
-        heroH1.style.transformOrigin = 'left top';
-        heroH1.style.transform =
-          'translate(' + (heroDock.x * t) + 'px,' + (heroDock.y * t) + 'px) ' +
-          'scale(' + (1 - (1 - heroDock.s) * t) + ')';
-        heroH1.style.opacity = String(1 - fade(p, 0.78, 0.88));
-      }
-      if (p > 0.01) {
-        var meta = 1 - fade(p, 0.04, 0.26);
-        heroFades.forEach(function (el) {
-          if (el === heroCue) return;
-          el.style.transitionDuration = '0s';
-          el.style.opacity = String(meta);
-        });
+      // giant text rides up and fades like before; CTAs stay
+      // visible with it instead of dying early
+      if (heroLockup) {
+        heroLockup.style.transform = 'translateY(' + (p * -70) + 'px)';
+        heroLockup.style.opacity = String(1 - fade(p, 0.4, 0.75));
       }
       if (heroCue) heroCue.style.opacity = String(1 - fade(p, 0.02, 0.1));
-      if (navWordmark) navWordmark.classList.toggle('is-on', p > 0.82);
+      // corner wordmark SNAPS in the moment the hero starts moving
+      if (navWordmark) navWordmark.classList.toggle('is-on', p > 0.1);
     },
 
     // ONE stage, three stacked layers. Each scene plays, then zooms
