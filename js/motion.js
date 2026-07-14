@@ -228,8 +228,13 @@
       // giant text rides up and fades like before; CTAs stay
       // visible with it instead of dying early
       if (heroLockup) {
+        var lockupVis = 1 - fade(p, 0.4, 0.75);
         heroLockup.style.transform = 'translateY(' + (p * -70) + 'px)';
-        heroLockup.style.opacity = String(1 - fade(p, 0.4, 0.75));
+        heroLockup.style.opacity = String(lockupVis);
+        // faded-out CTAs must stop catching taps — opacity alone
+        // leaves invisible but clickable buttons over the film
+        heroLockup.style.pointerEvents = lockupVis < 0.35 ? 'none' : '';
+        heroLockup.style.visibility = lockupVis === 0 ? 'hidden' : '';
       }
       if (heroCue) heroCue.style.opacity = String(1 - fade(p, 0.02, 0.1));
       // corner wordmark SNAPS in the moment the hero starts moving
