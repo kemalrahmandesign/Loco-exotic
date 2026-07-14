@@ -72,6 +72,8 @@
       var v = s.parentNode;
       v.removeChild(s);
       v.src = s.getAttribute('data-portrait');
+      var poster = s.getAttribute('data-portrait-poster');
+      if (poster) v.poster = poster;
     });
   }
 
