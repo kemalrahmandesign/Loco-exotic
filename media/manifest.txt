@@ -2,3 +2,4 @@ hero https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20
 brake https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260710_000318_8e336905-c7e1-4a64-9930-653378b468aa.mp4
 tail https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_234553_38ddef8f-9aec-41b8-81d7-26275193b21d.mp4
 lift https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190828_53313e2c-97e1-4624-8f6e-afbc920ac61d.mp4
+hero-portrait https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260714_035656_0a9fcca0-117d-442c-b686-d0c102b39441.mp4
