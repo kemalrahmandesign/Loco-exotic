@@ -62,6 +62,22 @@
   });
 
   /* ----------------------------------------------------------
+     Phones get portrait (9:16) cuts of any film that has one.
+     The cut is only swapped in once it's confirmed to exist, so
+     a missing portrait file silently keeps the landscape film.
+     ---------------------------------------------------------- */
+  if (window.matchMedia('(max-width: 640px)').matches) {
+    document.querySelectorAll('source[data-portrait]').forEach(function (s) {
+      var url = s.getAttribute('data-portrait');
+      fetch(url, { method: 'HEAD' }).then(function (res) {
+        if (!res.ok) return;
+        s.setAttribute('src', url);
+        s.parentNode.load();
+      }).catch(function () {});
+    });
+  }
+
+  /* ----------------------------------------------------------
      Pinned sections — shared progress computation. Each .pin
      gets p in [0,1] across its scrollable span; a handler per
      pin-name turns p into the section's choreography.
