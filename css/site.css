@@ -84,22 +84,25 @@ a { color: var(--color-warm-cream); }
 
 /* ---------- Buttons & links ---------- */
 .btn-pill {
-  display: inline-block;
-  background: var(--color-bark-brown);
-  color: var(--color-warm-cream);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-12);
+  background: var(--color-warm-cream);
+  color: var(--color-walnut-shadow);
   border: 0;
   border-radius: var(--radius-buttons-pill);
-  padding: var(--spacing-14) var(--spacing-24);
+  padding: 15px 22px 15px 26px;
   font: inherit;
   font-size: 14px;
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: background 0.4s var(--ease-out-expo);
+  transition: transform 0.35s var(--ease-out-expo);
 }
 
-.btn-pill:hover { background: #4a3220; }
+.btn-pill:hover { transform: translateY(-2px); }
 
 .btn-ghost {
   display: inline-block;
@@ -548,6 +551,7 @@ html.js:not(.reduced) .hero__cue-chevron {
 .statement {
   padding: clamp(120px, 15vw, 220px) var(--spacing-24);
   max-width: 1320px;
+  margin: 0 auto;
 }
 
 .statement__kicker {
@@ -563,13 +567,11 @@ html.js:not(.reduced) .hero__cue-chevron {
 
 .statement__cols {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: 1fr 1fr;
   gap: var(--spacing-41) clamp(40px, 6vw, 110px);
   margin-top: clamp(48px, 6vw, 88px);
   align-items: start;
 }
-
-.statement__cols .voice { max-width: 26em; }
 
 /* lead paragraph carries more weight than the follow-up */
 .statement__lead {
