@@ -549,7 +549,7 @@ html.js:not(.reduced) .hero__cue-chevron {
 
 /* ---------- Statement ---------- */
 .statement {
-  padding: clamp(120px, 15vw, 220px) var(--spacing-24);
+  padding: clamp(120px, 15vw, 220px) var(--spacing-24) clamp(120px, 15vw, 220px) var(--spacing-12);
 }
 
 .statement__kicker {
