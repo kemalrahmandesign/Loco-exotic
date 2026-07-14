@@ -62,18 +62,16 @@
   });
 
   /* ----------------------------------------------------------
-     Phones get portrait (9:16) cuts of any film that has one.
-     The cut is only swapped in once it's confirmed to exist, so
-     a missing portrait file silently keeps the landscape film.
+     Phones get portrait (9:16) cuts of any film that has one —
+     promoted synchronously to the video's own src (which outranks
+     <source> children) before anything below calls load(), so only
+     one file is ever fetched. Both portrait cuts ship in media/.
      ---------------------------------------------------------- */
   if (window.matchMedia('(max-width: 640px)').matches) {
     document.querySelectorAll('source[data-portrait]').forEach(function (s) {
-      var url = s.getAttribute('data-portrait');
-      fetch(url, { method: 'HEAD' }).then(function (res) {
-        if (!res.ok) return;
-        s.setAttribute('src', url);
-        s.parentNode.load();
-      }).catch(function () {});
+      var v = s.parentNode;
+      v.removeChild(s);
+      v.src = s.getAttribute('data-portrait');
     });
   }
 
@@ -86,7 +84,6 @@
     document.querySelectorAll('[data-pin]'),
     function (el) {
       var video = el.querySelector('[data-scrub]');
-      if (video) video.load();
       return {
         el: el,
         name: el.getAttribute('data-pin-name'),
@@ -170,8 +167,36 @@
   var tlBrakeCap = document.querySelector('[data-tl-brake-cap]');
   var tlStreaks = document.querySelector('[data-tl-streaks]');
   var tlStreaksVid = tlStreaks && tlStreaks.querySelector('[data-tunnel-video]');
-  if (tlBrakeVid) tlBrakeVid.load();
-  if (tlStreaksVid) tlStreaksVid.load();
+
+  /* The hero film loads immediately; every other film waits until its
+     section is within two viewports. Loading all ~19MB of film at once
+     starved the hero scrub of bandwidth and decode time — the main
+     source of early-scroll choppiness. */
+  function loadFilm(video) {
+    if (!video) return;
+    video.preload = 'auto';
+    video.load();
+  }
+
+  function deferFilm(video, section) {
+    if (!video || !section) return;
+    if (!('IntersectionObserver' in window)) { loadFilm(video); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        loadFilm(video);
+        io.disconnect();
+      });
+    }, { rootMargin: '200% 0px' });
+    io.observe(section);
+  }
+
+  pins.forEach(function (pin) {
+    if (pin.name === 'hero') loadFilm(pin.video);
+    else deferFilm(pin.video, pin.el);
+  });
+  deferFilm(tlBrakeVid, tlBrake && tlBrake.closest('.pin'));
+  deferFilm(tlStreaksVid, tlStreaks && tlStreaks.closest('.pin'));
 
   var handlers = {
     hero: function (pin, p) {
