@@ -3,3 +3,4 @@ brake https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_2
 tail https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_234553_38ddef8f-9aec-41b8-81d7-26275193b21d.mp4
 lift https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_190828_53313e2c-97e1-4624-8f6e-afbc920ac61d.mp4
 hero-portrait https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260714_035656_0a9fcca0-117d-442c-b686-d0c102b39441.mp4
+brake-portrait https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260714_045453_d6367b0e-06a0-4c8f-9fbd-193b51f17cdc.mp4
