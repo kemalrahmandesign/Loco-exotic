@@ -174,6 +174,9 @@
       if (heroCue) heroCue.style.opacity = String(1 - fade(p, 0.02, 0.1));
       // corner wordmark SNAPS in the moment the hero starts moving
       if (navWordmark) navWordmark.classList.toggle('is-on', p > 0.1);
+      // phone quick-book pill stays out of the hero — the real CTAs
+      // are already on screen; it returns as the hero scrolls away
+      if (bookPill) bookPill.classList.toggle('is-hidden', p < 0.85);
     },
 
     // ONE stage, three stacked layers. Each scene plays, then zooms
@@ -239,13 +242,18 @@
 
     lift: function (pin, p) {
       // Lift film runs underneath while five-star reviews pop up
-      // over it one at a time as glass cards.
+      // over it as glass cards. Desktop accumulates all six around
+      // the frame; phones only fit two slots, so each card holds
+      // its slot for a beat and hands off to the next.
       scrubVideo(pin, p);
       if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.06 && p < 0.9);
       var n = reviewCards.length;
+      var slot = 0.66 / n;
+      var phones = window.innerWidth <= 640;
       reviewCards.forEach(function (card, i) {
-        var at = 0.14 + (i / n) * 0.66;
-        card.classList.toggle('is-on', p > at);
+        var at = 0.14 + i * slot;
+        var on = phones ? (p > at && p < at + slot * 1.9) : (p > at);
+        card.classList.toggle('is-on', on);
       });
     }
   };

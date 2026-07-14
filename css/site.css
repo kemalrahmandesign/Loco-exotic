@@ -1121,14 +1121,44 @@ html.js:not(.reduced) .streak-row {
 
   /* hero name must fit the viewport, not overflow it */
   .display { font-size: clamp(44px, 15.5vw, 76px); line-height: 0.9; }
-  .hero__lockup { top: clamp(76px, 13vh, 120px); }
+  .hero__lockup { top: clamp(76px, 13vh, 120px); bottom: 92px; }
   .hero__tagline { font-size: 11px; }
   .hero__sub { font-size: 15px; margin-top: var(--spacing-14); }
-  .hero__actions { margin-top: var(--spacing-24); }
-  .hero__actions .btn-pill { font-size: 13px; padding: var(--spacing-12) var(--spacing-18); }
 
-  .hero__cue-text { display: none; }
-  .hero__cue { bottom: var(--spacing-18); }
+  /* CTAs drop to the bottom of the screen so the car stays visible
+     between the title and the buttons */
+  .hero__actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-12);
+  }
+  .hero__actions .cta { justify-content: center; }
+
+  /* scroll cue keeps its "Scroll" label, tucked under the CTAs */
+  .hero__cue { bottom: var(--spacing-12); }
+  .hero__cue-more { display: none; }
+  .hero__cue-badge { width: 38px; height: 38px; }
+  .hero__cue-text {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-shadow: 0 1px 8px rgba(6, 3, 2, 0.9);
+  }
+
+  /* deeper bottom wash so the CTAs and cue hold contrast over the car */
+  .hero::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(16, 9, 4, 0.5) 0%,
+      rgba(16, 9, 4, 0.08) 40%,
+      rgba(16, 9, 4, 0.3) 62%,
+      rgba(16, 9, 4, 0.82) 100%
+    );
+  }
 
   /* statement: tighten scale so nothing clips */
   .statement { padding: clamp(80px, 20vw, 120px) var(--spacing-24); }
@@ -1137,25 +1167,48 @@ html.js:not(.reduced) .streak-row {
   .stat__value { font-size: clamp(48px, 15vw, 72px); }
   .stat__label { font-size: 12px; }
 
-  /* section captions and headings sit clear of the nav */
-  .pin__caption { left: var(--spacing-18); right: var(--spacing-18); bottom: var(--spacing-31); }
+  /* section captions and headings sit clear of the nav — bottom
+     captions also keep clear of the quick-book pill's corner */
+  .pin__caption { left: var(--spacing-18); right: 104px; bottom: var(--spacing-31); }
+  .pin__caption--top { right: var(--spacing-18); }
   .pin__caption--top { top: clamp(72px, 12vh, 110px); }
   .heading { font-size: clamp(28px, 8vw, 40px); }
 
-  /* gear tunnel text scaled for small screens */
+  /* marques banner reads too slow on a small screen — speed it up */
+  html.js:not(.reduced) .marquee__track { animation-duration: 16s; }
+
+  /* gear tunnel text scaled for small screens, with a dark scrim so
+     it stays readable over the bright gear teeth */
   .gear-beat__name { font-size: clamp(22px, 6.5vw, 30px); }
+  .gear-beat {
+    padding: var(--spacing-24) var(--spacing-18);
+    background: radial-gradient(closest-side, rgba(6, 3, 2, 0.85) 45%, rgba(6, 3, 2, 0) 100%);
+  }
+  .gear-beat__index,
+  .gear-beat__name,
+  .gear-beat__sub { text-shadow: 0 1px 10px rgba(6, 3, 2, 0.95); }
+
+  /* rotor: show the whole disc instead of a cover-crop blowup —
+     contain it inside a warm vignette that matches the film */
+  .tunnel__brake { background: radial-gradient(circle at 50% 44%, #2a1204 0%, #100904 62%); }
+  .tunnel__brake video {
+    width: 150%;
+    left: 50%;
+    right: auto;
+    margin-left: -75%;
+    object-fit: contain;
+  }
 
   /* streak service rows fit width */
   .streak-row__name { font-size: clamp(22px, 7vw, 32px); }
   .streaks__rows { padding: 12svh var(--spacing-18); }
 
-  /* reviews: full-width stacked cards, generous vertical rhythm */
-  .lift-reviews { padding: 14svh var(--spacing-18) 12svh; }
+  /* reviews: cards take turns in two slots (JS shows one or two at
+     a time on phones) so nothing squishes or gets cut off */
   .review-card { width: auto; left: var(--spacing-18) !important; right: var(--spacing-18) !important; }
-  .review-card--1 { top: 16%; }
-  .review-card--2 { top: 36%; }
-  .review-card--3 { top: 56%; }
-  .review-card--4 { top: 76%; }
+  .review-card--1, .review-card--3, .review-card--5 { top: 24%; }
+  .review-card--2, .review-card--4, .review-card--6 { top: 57%; }
+  .review-card__quote { font-size: 17px; }
 
   .visit__phone { font-size: clamp(28px, 9vw, 40px); }
   .footer__row { flex-direction: column; gap: var(--spacing-18); }
