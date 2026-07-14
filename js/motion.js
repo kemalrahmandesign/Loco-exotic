@@ -229,10 +229,7 @@
       if (tlBrakeVid) {
         var bIn = (1 - fade(p, 0.3, 0.4)) * 0.15;   // settle from +15%
         var bOut = fade(p, 0.54, 0.76) * 1.35;       // long, deep zoom into the rotor before the blend
-        // phones contain the film (see CSS), so give it a base zoom
-        // that fills the width without losing the disc
-        var bBase = window.innerWidth <= 640 ? 1.35 : 1;
-        tlBrakeVid.style.transform = 'scale(' + ((1 + bIn + bOut) * bBase) + ')';
+        tlBrakeVid.style.transform = 'scale(' + (1 + bIn + bOut) + ')';
       }
       if (tlBrakeCap) tlBrakeCap.classList.toggle('is-on', p > 0.44 && p < 0.6);
 

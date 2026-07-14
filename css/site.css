@@ -1188,23 +1188,6 @@ html.js:not(.reduced) .streak-row {
   .gear-beat__name,
   .gear-beat__sub { text-shadow: 0 1px 10px rgba(6, 3, 2, 0.95); }
 
-  /* rotor: show the whole disc instead of a cover-crop blowup.
-     Plain centered contain (the motion engine scales it up on
-     phones), with the frame's edges feathered into the vignette */
-  .tunnel__brake { background: radial-gradient(circle at 50% 44%, #2a1204 0%, #100904 62%); }
-  /* the 16:9 film letterboxes inside the full-height box; its top and
-     bottom edges sit 28.125vw either side of center (100vw * 9/16 / 2),
-     so the feather is anchored to those real content edges */
-  .tunnel__brake video {
-    object-fit: contain;
-    -webkit-mask-image: linear-gradient(to bottom,
-      transparent calc(50% - 28.2vw), #000 calc(50% - 19vw),
-      #000 calc(50% + 19vw), transparent calc(50% + 28.2vw));
-    mask-image: linear-gradient(to bottom,
-      transparent calc(50% - 28.2vw), #000 calc(50% - 19vw),
-      #000 calc(50% + 19vw), transparent calc(50% + 28.2vw));
-  }
-
   /* streak service rows fit width */
   .streak-row__name { font-size: clamp(22px, 7vw, 32px); }
   .streaks__rows { padding: 12svh var(--spacing-18); }
