@@ -1188,15 +1188,14 @@ html.js:not(.reduced) .streak-row {
   .gear-beat__name,
   .gear-beat__sub { text-shadow: 0 1px 10px rgba(6, 3, 2, 0.95); }
 
-  /* rotor: show the whole disc instead of a cover-crop blowup —
-     contain it inside a warm vignette that matches the film */
+  /* rotor: show the whole disc instead of a cover-crop blowup.
+     Plain centered contain (the motion engine scales it up on
+     phones), with the frame's edges feathered into the vignette */
   .tunnel__brake { background: radial-gradient(circle at 50% 44%, #2a1204 0%, #100904 62%); }
   .tunnel__brake video {
-    width: 150%;
-    left: 50%;
-    right: auto;
-    margin-left: -75%;
     object-fit: contain;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
   }
 
   /* streak service rows fit width */
