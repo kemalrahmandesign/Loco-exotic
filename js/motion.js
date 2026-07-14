@@ -67,15 +67,19 @@
      <source> children) before anything below calls load(), so only
      one file is ever fetched. Both portrait cuts ship in media/.
      ---------------------------------------------------------- */
-  if (window.matchMedia('(max-width: 640px)').matches) {
-    document.querySelectorAll('source[data-portrait]').forEach(function (s) {
-      var v = s.parentNode;
+  var portraitMode = window.matchMedia('(max-width: 640px)').matches;
+  document.querySelectorAll('source[data-portrait]').forEach(function (s) {
+    var v = s.parentNode;
+    if (portraitMode) {
       v.removeChild(s);
       v.src = s.getAttribute('data-portrait');
-      var poster = s.getAttribute('data-portrait-poster');
-      if (poster) v.poster = poster;
-    });
-  }
+    }
+    // the poster is assigned here, once, rather than in the HTML —
+    // shipping a poster attribute painted the landscape frame first
+    // on phones and made the hero appear to reload on cold loads
+    var poster = s.getAttribute(portraitMode ? 'data-portrait-poster' : 'data-poster');
+    if (poster) v.poster = poster;
+  });
 
   /* ----------------------------------------------------------
      Pinned sections — shared progress computation. Each .pin

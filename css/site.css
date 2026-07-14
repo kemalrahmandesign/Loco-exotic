@@ -1009,6 +1009,13 @@ html.js:not(.reduced) .tunnel__streaks {
    neutralized entirely under prefers-reduced-motion.
    ===================================================== */
 
+/* the split-word headline is hidden from FIRST paint — without this,
+   cold loads flash the plain headline before JS wraps its words,
+   which read as the hero reloading itself */
+html.js:not(.reduced) [data-intro-words] { opacity: 0; }
+html.js:not(.reduced) .is-in [data-intro-words],
+html.js:not(.reduced) [data-intro-words].is-in { opacity: 1; }
+
 html.js:not(.reduced) [data-intro-fade] {
   opacity: 0;
   transition: opacity 1.4s var(--ease-out-expo) 0.3s;
