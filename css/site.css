@@ -382,6 +382,17 @@ html.js:not(.reduced) .pin__caption.is-on {
   margin: 0;
 }
 
+.lift__hint {
+  position: absolute;
+  left: 50%;
+  bottom: var(--spacing-24);
+  transform: translateX(-50%);
+  z-index: 1;
+  margin: 0;
+  color: var(--color-warm-cream);
+  opacity: 0;
+}
+
 html.js:not(.reduced) .review-card {
   opacity: 0;
   transform: translateY(40px) scale(0.96);

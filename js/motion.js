@@ -50,13 +50,25 @@
     }, { passive: true });
   }
 
+  // Pinned scenes are empty at progress 0, so their nav anchors land
+  // a little way INTO the scrub — far enough that the first beat
+  // (services) or the caption and first review (reviews) is on screen.
+  var anchorDepth = { services: 0.06, reviews: 0.18 };
+
   document.querySelectorAll('a[href^="#"]').forEach(function (a) {
     a.addEventListener('click', function (e) {
-      var dest = document.getElementById(a.getAttribute('href').slice(1));
+      var id = a.getAttribute('href').slice(1);
+      var dest = document.getElementById(id);
       if (!dest) return;
+      var top = dest.getBoundingClientRect().top + window.scrollY;
+      if (anchorDepth[id] && dest.hasAttribute('data-pin')) {
+        top += (dest.offsetHeight - window.innerHeight) * anchorDepth[id];
+      }
+      e.preventDefault();
       if (hijack) {
-        e.preventDefault();
-        target = clamp(dest.getBoundingClientRect().top + window.scrollY, 0, maxScroll());
+        target = clamp(top, 0, maxScroll());
+      } else {
+        window.scrollTo({ top: top, behavior: 'smooth' });
       }
     });
   });
@@ -166,6 +178,7 @@
   var gearHint = document.querySelector('.gear-stage__hint');
   var streakRows = document.querySelectorAll('[data-streak-row]');
   var reviewCards = document.querySelectorAll('[data-review-card]');
+  var liftHint = document.querySelector('[data-lift-hint]');
 
   // Tunnel layers + their videos
   var tlBrake = document.querySelector('[data-tl-brake]');
@@ -294,6 +307,9 @@
       // its slot for a beat and hands off to the next.
       scrubVideo(pin, p);
       if (pin.caption) pin.caption.classList.toggle('is-on', p > 0.06 && p < 0.9);
+      if (liftHint) {
+        liftHint.style.opacity = String(fade(p, 0.08, 0.16) * (1 - fade(p, 0.32, 0.42)) * 0.9);
+      }
       var n = reviewCards.length;
       var slot = 0.66 / n;
       var phones = window.innerWidth <= 640;
