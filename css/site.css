@@ -987,11 +987,13 @@ html.js:not(.reduced) .tunnel__streaks {
   bottom: var(--spacing-18);
   z-index: 50;
   display: none;
-  background: var(--color-bark-brown);
-  color: var(--color-warm-cream);
+  background: var(--color-warm-cream);
+  color: var(--color-walnut-shadow);
   border-radius: var(--radius-buttons-pill);
   padding: var(--spacing-12) var(--spacing-24);
   font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.03em;
   text-decoration: none;
   transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
 }
