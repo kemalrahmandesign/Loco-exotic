@@ -34,6 +34,16 @@ jobs:
           done < media/manifest.txt
           ls -la media
 
+      - name: Download stills
+        run: |
+          set -euo pipefail
+          while read -r name url; do
+            [ -z "${name:-}" ] && continue
+            echo "== $name"
+            curl -fsSL "$url" -o "media/$name.png"
+          done < media/images.txt
+          ls -la media
+
       - name: Commit
         run: |
           git config user.name "github-actions[bot]"
