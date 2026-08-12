@@ -13,11 +13,19 @@
   <meta property="og:image" content="https://kemalrahmandesign.github.io/Loco-exotic/media/hero-poster.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23100904'/%3E%3Ctext x='32' y='43' font-family='Arial,sans-serif' font-size='26' font-weight='800' fill='%23ffedd7' text-anchor='middle'%3ELE%3C/text%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fonts/inter.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/site.css">
+
+  <!-- Installable + offline: add to Home Screen once on good wifi and
+       the whole site (films included) runs with no network at all. -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#100904">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Loco Exotics">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+
   <script>document.documentElement.classList.add('js');</script>
   <script src="js/motion.js" defer></script>
 </head>
@@ -130,13 +138,16 @@
     <div class="pin__stage tunnel">
 
       <div class="tunnel__layer tunnel__gear">
-        <img
-          class="gear-stage__gear"
-          data-gear
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_233820_ba786c51-a2cb-4480-bdcb-eec484940f67.png"
-          loading="lazy" decoding="async"
-          alt="" aria-hidden="true"
-        >
+        <picture class="gear-stage__pic">
+          <source srcset="media/gear.webp" type="image/webp">
+          <img
+            class="gear-stage__gear"
+            data-gear
+            src="media/gear.png"
+            loading="lazy" decoding="async"
+            alt="" aria-hidden="true"
+          >
+        </picture>
         <span class="gear-stage__hole" data-gear-hole aria-hidden="true"></span>
         <div class="gear-stage__beats">
           <div class="gear-beat" data-gear-beat>
@@ -202,7 +213,7 @@
         webkit-playsinline
         preload="none"
         disablepictureinpicture
-        poster="https://d8j0ntlcm91z4.cloudfront.net/user_3FE0Xjh16Sot9aoCPbOwO7vYemS/hf_20260709_155558_92ae0544-27dd-4d2a-86c8-138b370a1fb8.png"
+        poster="media/lift-poster.jpg"
         aria-hidden="true"
         tabindex="-1"
       >
@@ -350,6 +361,28 @@
 
   <!-- Mobile quick-book pill -->
   <a class="book-pill" href="#book" data-book-pill>Book</a>
+
+  <!-- Confirms the films finished caching, so you know the demo will
+       survive going offline. Shows once, then never again. -->
+  <div class="offline-toast" data-offline-toast hidden>Saved for offline — you can drop the network.</div>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.addEventListener('message', function (e) {
+          if (!e.data || e.data.type !== 'offline-ready') return;
+          if (localStorage.getItem('loco-offline-shown')) return;
+          localStorage.setItem('loco-offline-shown', '1');
+          var toast = document.querySelector('[data-offline-toast]');
+          if (!toast) return;
+          toast.hidden = false;
+          requestAnimationFrame(function () { toast.classList.add('is-on'); });
+          setTimeout(function () { toast.classList.remove('is-on'); }, 4200);
+        });
+      });
+    }
+  </script>
 
 </body>
 </html>
