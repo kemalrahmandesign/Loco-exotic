@@ -34,14 +34,25 @@ jobs:
           done < media/manifest.txt
           ls -la media
 
-      - name: Download stills
+      - name: Download and optimize stills
         run: |
           set -euo pipefail
           while read -r name url; do
             [ -z "${name:-}" ] && continue
             echo "== $name"
-            curl -fsSL "$url" -o "media/$name.png"
+            curl -fsSL "$url" -o "/tmp/$name.src"
+            if [ "$name" = "gear" ]; then
+              # Cutout: keep it 2048 wide (it gets zoomed ~3x, and a
+              # small source is what pixelated the old one) but ship
+              # WebP so alpha survives at a fraction of the PNG size.
+              ffmpeg -nostdin -y -i "/tmp/$name.src" -c:v libwebp -q:v 82 "media/gear.webp"
+              ffmpeg -nostdin -y -i "/tmp/$name.src" -vf scale=1200:-1 "media/gear.png"
+            else
+              # Posters only show before a film decodes — 1280 JPEG is plenty.
+              ffmpeg -nostdin -y -i "/tmp/$name.src" -vf scale=1280:-1 -q:v 4 "media/$name.jpg"
+            fi
           done < media/images.txt
+          rm -f media/hero-poster.png media/lift-poster.png
           ls -la media
 
       - name: Commit

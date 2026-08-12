@@ -1160,3 +1160,36 @@ html.js:not(.reduced) .streak-row {
   .visit__phone { font-size: clamp(28px, 9vw, 40px); }
   .footer__row { flex-direction: column; gap: var(--spacing-18); }
 }
+
+/* ---------------------------------------------------------------
+   Offline-ready toast — one-time confirmation that the service
+   worker finished precaching the films.
+   --------------------------------------------------------------- */
+.offline-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translate(-50%, 16px);
+  z-index: 90;
+  padding: 12px 20px;
+  border: 1px solid var(--color-cork-border);
+  border-radius: var(--radius-full-round);
+  background: rgba(16, 9, 4, 0.86);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--color-warm-cream);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.offline-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* <picture> wrapper must not become the grid item — the <img> keeps
+   its own grid-area and transform. */
+.gear-stage__pic { display: contents; }
