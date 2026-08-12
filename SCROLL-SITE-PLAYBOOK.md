@@ -132,6 +132,29 @@ shipped behavior: giant lockup rides up and fades (`translateY(p * -70px)`, opac
 p≈0.26 ("cta button kinda dissapears quickly") — fix was letting them ride the lockup's
 fade window instead of having their own early one.
 
+**17. Making it work offline (added after the build, for an on-site demo).**
+Four things this surfaced, all verified:
+- **Self-host everything.** Google Fonts and the CloudFront stills were runtime
+  dependencies; nothing offline works until they're in the repo. Inter v20 from the
+  css2 API is a *variable* font — the 400/600/800 files Google serves are byte-identical,
+  so one 48KB woff2 with `font-weight: 100 900` replaces all three.
+- **Safari refuses a plain 200 for video.** A cache-first service worker must read the
+  `Range` header and answer `206` with a real `Content-Range` and a sliced body, or the
+  films play on desktop and fail on iPad. See `rangeReply()` in `sw.js`.
+- **iOS Safari does not reliably route `<video>` through the service worker at all**,
+  so even a correct 206 handler isn't enough. The fix that removes the dependency:
+  once the cache is warm, read each film out of the Cache API and set
+  `video.src = URL.createObjectURL(blob)`. Blob URLs need no interception and support
+  seeking natively — which is exactly what scrubbing needs.
+- **Generated stills are wildly oversized.** The gear cutout came off CloudFront as a
+  6.5MB 2048px PNG; WebP at the same 2048 (needed — it's zoomed ~3x) is 275KB. Posters
+  went from 2.8MB PNG to ~50KB JPEG. Total precache: 16MB.
+- **Testing caveat:** the sandbox Chromium has no H.264 decoder (`canPlayType` for
+  avc1 returns `""`), so video playback cannot be verified here — it fails online too.
+  What *is* verifiable, and what was checked: every file served offline is SHA-256
+  identical to disk, range slices match the real bytes exactly, and all four video
+  elements take the blob source.
+
 ---
 
 ## 2. THE WORKING IMPLEMENTATION (canon)
@@ -328,7 +351,12 @@ index.html                    all markup + copy; sections wired via data-* attri
 css/tokens.css                design tokens: colors, type scale/weights, spacing, radii
 css/site.css                  all component/section styles, breakpoints at 900px/640px
 js/motion.js                  the entire motion engine (ES5 IIFE)
+sw.js                         offline precache + Safari Range/206 handling
+manifest.webmanifest          Add to Home Screen metadata
+fonts/                        self-hosted Inter (variable woff2) + @font-face
+icons/                        app icons
 media/manifest.txt            name → source-URL map consumed by media.yml
+media/images.txt              name → still-URL map (optimized to webp/jpg by media.yml)
 media/*.mp4                   re-encoded scrub films (committed, served same-origin)
 .github/workflows/media.yml   manual re-encode pipeline (see §3)
 .github/workflows/pages.yml   Pages deploy (triggers on push to the deploy branch)
