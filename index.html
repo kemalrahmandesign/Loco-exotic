@@ -367,15 +367,47 @@
   <div class="offline-toast" data-offline-toast hidden>Saved for offline — you can drop the network.</div>
 
   <script>
+    /* iOS Safari does not reliably route <video> requests through a
+       service worker, so once the films are cached we hand them to the
+       elements directly as blob: URLs. Runs after motion.js has picked
+       its portrait/landscape source. */
+    function useCachedFilms() {
+      if (!('caches' in window)) return;
+      caches.keys().then(function (names) {
+        var name = names.filter(function (n) { return n.indexOf('loco-') === 0; })[0];
+        if (!name) return;
+        return caches.open(name).then(function (cache) {
+          var vids = Array.prototype.slice.call(document.querySelectorAll('video'));
+          return Promise.all(vids.map(function (v) {
+            var src = v.currentSrc || v.getAttribute('src');
+            if (!src) {
+              var s = v.querySelector('source');
+              src = s && s.getAttribute('src');
+            }
+            if (!src || src.indexOf('blob:') === 0) return null;
+            return cache.match(new URL(src, location.href).href).then(function (hit) {
+              if (!hit) return null;
+              return hit.blob().then(function (blob) {
+                v.src = URL.createObjectURL(blob);
+                v.load();
+              });
+            });
+          }));
+        });
+      })['catch'](function () { /* stay on the network sources */ });
+    }
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
         navigator.serviceWorker.register('sw.js');
+        useCachedFilms();
         navigator.serviceWorker.addEventListener('message', function (e) {
           if (!e.data || e.data.type !== 'offline-ready') return;
           if (localStorage.getItem('loco-offline-shown')) return;
           localStorage.setItem('loco-offline-shown', '1');
           var toast = document.querySelector('[data-offline-toast]');
           if (!toast) return;
+          useCachedFilms();
           toast.hidden = false;
           requestAnimationFrame(function () { toast.classList.add('is-on'); });
           setTimeout(function () { toast.classList.remove('is-on'); }, 4200);
